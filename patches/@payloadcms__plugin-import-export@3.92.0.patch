@@ -1,0 +1,21 @@
+diff --git a/dist/import/batchProcessor.js b/dist/import/batchProcessor.js
+--- a/dist/import/batchProcessor.js
++++ b/dist/import/batchProcessor.js
+@@ -1,4 +1,4 @@
+-import { isolateObjectProperty } from 'payload';
++import { getDataLoader, isolateObjectProperty } from 'payload';
+ import { categorizeError, createBatches, extractErrorMessage } from '../utilities/useBatchProcessor.js';
+ /**
+  * Separates multi-locale data from a document for sequential locale updates.
+@@ -76,8 +76,10 @@
+     // Payload's error handling calls killTransaction(req), which would kill the parent's transaction
+     // if we shared the same transaction. By isolating and clearing transactionID, each nested
+     // operation either uses no transaction or starts its own, independent of the parent.
+-    const req = isolateObjectProperty(reqFromArgs, 'transactionID');
++    const req = isolateObjectProperty(reqFromArgs, ['transactionID', 'payloadDataLoader']);
+     req.transactionID = undefined;
++    // The loader writes transactionID on its captured request, so it must be isolated too.
++    req.payloadDataLoader = getDataLoader(req);
+     const collectionEntry = req.payload.collections[collectionSlug];
+     const collectionConfig = collectionEntry?.config;
+     const collectionHasVersions = Boolean(collectionConfig?.versions);

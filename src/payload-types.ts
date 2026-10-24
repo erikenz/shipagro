@@ -315,6 +315,7 @@ export interface Quote {
  */
 export interface Export {
   id: number;
+  tenant?: (number | null) | Tenant;
   name?: string | null;
   format: 'csv' | 'json';
   limit?: number | null;
@@ -352,6 +353,7 @@ export interface Export {
  */
 export interface Import {
   id: number;
+  tenant?: (number | null) | Tenant;
   collectionSlug: string;
   importMode?: ('create' | 'update' | 'upsert') | null;
   matchField?: string | null;
@@ -724,6 +726,7 @@ export interface QuotesSelect<T extends boolean = true> {
  * via the `definition` "exports_select".
  */
 export interface ExportsSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
   format?: T;
   limit?: T;
@@ -752,6 +755,7 @@ export interface ExportsSelect<T extends boolean = true> {
  * via the `definition` "imports_select".
  */
 export interface ImportsSelect<T extends boolean = true> {
+  tenant?: T;
   collectionSlug?: T;
   importMode?: T;
   matchField?: T;
