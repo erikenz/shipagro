@@ -5,6 +5,7 @@ import { authenticated } from '@/access'
 import { CURRENCIES, GRAINS, STAGES } from '@/domain'
 import { responsable } from '@/fields/responsable'
 import { setUpdatedBy, updatedBy } from '@/fields/updatedBy'
+import { applyStageDefaults } from '@/pendientes/stageDefaults'
 
 // Operación: one grain deal between a Vendedor and a Comprador, followed through its Etapas.
 export const Operations: CollectionConfig = {
@@ -15,7 +16,7 @@ export const Operations: CollectionConfig = {
   },
   access: { create: authenticated, read: authenticated, update: authenticated, delete: authenticated },
   versions: true,
-  hooks: { beforeChange: [setUpdatedBy] },
+  hooks: { beforeChange: [setUpdatedBy, applyStageDefaults] },
   fields: [
     {
       name: 'seller',
