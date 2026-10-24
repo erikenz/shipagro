@@ -3,8 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
-import { mutedStyle } from './styles'
-
 type TickResult = { quotes?: number; alerts?: number; error?: string }
 
 const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
@@ -30,24 +28,18 @@ export function SimularCotizaciones() {
         )
         router.refresh()
       } catch {
-        setMessage('No se pudo consultar el feed.')
+        setMessage('No se pudieron simular las Cotizaciones.')
       }
     })
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'calc(var(--base) / 2)' }}>
-      <button
-        type="button"
-        className="btn btn--style-secondary btn--size-small"
-        style={{ margin: 0 }}
-        onClick={run}
-        disabled={pending}
-      >
+    <>
+      <button type="button" className="desk-text-link" onClick={run} disabled={pending}>
         {pending ? 'Simulando…' : 'Simular cotizaciones'}
       </button>
-      <span style={mutedStyle} role="status" aria-live="polite">
+      <span className="desk-muted" role="status" aria-live="polite">
         {message}
       </span>
-    </div>
+    </>
   )
 }

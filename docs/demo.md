@@ -29,12 +29,12 @@ Log in as `bruno@pampa.test`.
 
 ## 2. The price gets close (1 click)
 
-The prices are simulated: no A3 connection is involved, and any Usuario can move them. On the dashboard, in the **Precios** card, press **Simular cotizaciones**.
+The prices are simulated: no A3 connection is involved, and any Usuario can move them. In the dashboard footer, press **Simular cotizaciones**.
 
 - Each Instrumento with an active Precio gatillo gets a new Cotización at its *cerca* price: SOJ.ROS/MAY27 at 321,8, MAI.ROS/ABR27 at 188,1, TRI.ROS/DIC26 at 208.
 - Three **Alertas cerca** appear under open Alertas: Juan Pérez (venta 325), Cooperativa Agrícola Unión (venta 190) and Molino San Martín SA (compra 206). Their Responsables get the email.
 - Marta Gómez's trigger in Norte stays quiet: 321,8 is below 99% of 327.
-- The **Cotizaciones** list shows the simulated trades, and the Precios card says **Precios al día**.
+- The **Cotizaciones** list shows the simulated trades, and the dashboard header says **Simulación al día**.
 
 With no SMTP set, email goes to ethereal.email; the test inbox credentials are printed by `pnpm dev`. Emails are the only part of this step that can't be shown from the deployed app.
 
@@ -52,7 +52,7 @@ Prefer typing an exact price? The super-admin can still do it in **Cotizaciones 
 
 Open the alcanzado Alerta and set **Resolución → Confirmar**. The Precio gatillo becomes **Confirmado** and a new **Operación** (Concertada) opens for Juan Pérez, linked to it.
 
-Optional: repeat steps 2–3 with `TRI.ROS/DIC26` at `208` then `206` to show a compra.
+Optional: repeat the Resolución with `TRI.ROS/DIC26` at `206`, the compra trigger the same two presses already brought to Alcanzado, to see a Comprador created instead of a Vendedor.
 
 ## 5. Each Empresa stays apart (1 min)
 
