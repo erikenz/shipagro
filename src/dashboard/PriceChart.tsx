@@ -21,9 +21,10 @@ export default function PriceChart({ quotes }: { quotes: Pick<Quote, 'price' | '
   const start = new Date(quotes[0].tradedAt).getTime()
   const end = new Date(quotes[quotes.length - 1].tradedAt).getTime()
   const x = (index: number) => {
-    const fraction = end === start
-      ? index / (quotes.length - 1)
-      : (new Date(quotes[index].tradedAt).getTime() - start) / (end - start)
+    const fraction =
+      end === start
+        ? index / (quotes.length - 1)
+        : (new Date(quotes[index].tradedAt).getTime() - start) / (end - start)
     return 6 + fraction * 556
   }
   const y = (price: number) => 12 + ((high - price) / (high - low)) * 138
@@ -40,7 +41,9 @@ export default function PriceChart({ quotes }: { quotes: Pick<Quote, 'price' | '
         return (
           <g key={step}>
             <line className="desk-chart-grid" x1="6" x2="562" y1={y(price)} y2={y(price)} />
-            <text x="572" y={y(price) + 4}>{formatPrice(price)}</text>
+            <text x="572" y={y(price) + 4}>
+              {formatPrice(price)}
+            </text>
           </g>
         )
       })}

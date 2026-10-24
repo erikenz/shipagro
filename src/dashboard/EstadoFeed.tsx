@@ -1,11 +1,9 @@
 import type { ServerProps } from 'payload'
 
-import { isSuperAdmin } from '@/access'
 import { isLiveFeed } from '@/feed/a3Client'
 import { formatDay, formatTime } from '@/pendientes/time'
 
 import { feedState } from './market'
-import { SimularCotizaciones } from './SimularCotizaciones'
 
 const lastUpdate = (lastSuccessAt?: string | null) =>
   lastSuccessAt
@@ -27,14 +25,17 @@ export default async function EstadoFeed({ payload, user }: Pick<ServerProps, 'p
           ? 'Mercado cerrado'
           : state.kind === 'sin-actualizar'
             ? 'Precios sin actualizar'
-            : live ? 'Rueda abierta · Precios al día' : 'Simulación al día'}
+            : live
+              ? 'Rueda abierta · Precios al día'
+              : 'Simulación al día'}
       </span>
-      <span>{live ? 'A3 Mercados · reMarkets (prueba)' : 'Precios simulados · Sin conexión a A3'}</span>
+      <span>
+        {live ? 'A3 Mercados · reMarkets (prueba)' : 'Precios simulados · Sin conexión a A3'}
+      </span>
       <span className="desk-status-detail">{lastUpdate(status.lastSuccessAt)}</span>
       {status.lastError && (
         <span className="desk-status-detail">Último error del feed: {status.lastError}</span>
       )}
-      {isSuperAdmin(user) ? <SimularCotizaciones /> : null}
     </div>
   )
 }

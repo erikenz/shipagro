@@ -18,15 +18,11 @@ export default async function Market({ payload, user }: Pick<ServerProps, 'paylo
   })
   const quote = latest.docs[0]
   const instrument = quote && typeof quote.instrument === 'object' ? quote.instrument : null
+  // Every Cotización of the Instrumento is an observation of the same market, whatever its source.
   const history = quote
     ? await payload.find({
         collection: 'quotes',
-        where: {
-          and: [
-            { instrument: { equals: instrument?.id ?? quote.instrument } },
-            { source: { equals: quote.source } },
-          ],
-        },
+        where: { instrument: { equals: instrument?.id ?? quote.instrument } },
         sort: '-tradedAt',
         limit: 60,
         depth: 0,
@@ -40,9 +36,14 @@ export default async function Market({ payload, user }: Pick<ServerProps, 'paylo
       <div className="desk-panel-heading">
         <div>
           <h2 id="desk-market-title">
-            {instrument ? `${labelOf(GRAINS, instrument.grain)} · ${instrument.month || instrument.symbol}` : 'Mercado de referencia'}
+            {instrument
+              ? `${labelOf(GRAINS, instrument.grain)} · ${instrument.month || instrument.symbol}`
+              : 'Mercado de referencia'}
           </h2>
-          <span className="desk-ticker">{instrument?.symbol ?? 'A3 Mercados'} · {quote ? labelOf(QUOTE_SOURCES, quote.source) : 'Sin Cotizaciones'}</span>
+          <span className="desk-ticker">
+            {instrument?.symbol ?? 'A3 Mercados'} ·{' '}
+            {quote ? labelOf(QUOTE_SOURCES, quote.source) : 'Sin Cotizaciones'}
+          </span>
         </div>
         <span className="desk-chip">Última Cotización registrada</span>
       </div>
@@ -55,14 +56,24 @@ export default async function Market({ payload, user }: Pick<ServerProps, 'paylo
           </div>
         </div>
         <dl className="desk-quote-side">
-          <div><dt>Punta compradora</dt><dd>{formatPrice(quote?.bid)}</dd></div>
-          <div><dt>Punta vendedora</dt><dd>{formatPrice(quote?.offer)}</dd></div>
+          <div>
+            <dt>Punta compradora</dt>
+            <dd>{formatPrice(quote?.bid)}</dd>
+          </div>
+          <div>
+            <dt>Punta vendedora</dt>
+            <dd>{formatPrice(quote?.offer)}</dd>
+          </div>
         </dl>
       </div>
       <PriceChart quotes={history ? [...history.docs].reverse() : []} />
       <div className="desk-panel-footer">
         <span className="desk-muted">Las Alertas se evalúan sobre el último operado.</span>
-        {quote && <time className="desk-mono" dateTime={quote.tradedAt}>{formatDay(quote.tradedAt)} · {formatTime(quote.tradedAt)}</time>}
+        {quote && (
+          <time className="desk-mono" dateTime={quote.tradedAt}>
+            {formatDay(quote.tradedAt)} · {formatTime(quote.tradedAt)}
+          </time>
+        )}
       </div>
     </section>
   )

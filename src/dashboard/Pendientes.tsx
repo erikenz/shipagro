@@ -27,15 +27,22 @@ export default async function Pendientes({
     <section className="desk-panel desk-pending" aria-labelledby="pendientes-title">
       <div className="desk-panel-heading">
         <h2 id="pendientes-title">Mis pendientes</h2>
-        <span className="desk-muted">Primero, lo que necesita tu atención <span className="desk-count">{pendientes.length}</span></span>
+        <span className="desk-muted">
+          Primero, lo que necesita tu atención{' '}
+          <span className="desk-count">{pendientes.length}</span>
+        </span>
       </div>
       {pendientes.length === 0 ? (
-        <p className="desk-empty">No tenés nada pendiente. Las Alertas y Operaciones a tu cargo aparecen acá.</p>
+        <p className="desk-empty">
+          No tenés nada pendiente. Las Alertas y Operaciones a tu cargo aparecen acá.
+        </p>
       ) : (
         <ul className="desk-pending-list">
           {pendientes.map((item) => (
             <li key={`${item.collection}-${item.id}`}>
-              <span className={`desk-chip${URGENT.includes(item.kind) ? ' desk-chip-amber' : ''}`}>{KIND_LABELS[item.kind]}</span>
+              <span className={`desk-chip${URGENT.includes(item.kind) ? ' desk-chip-amber' : ''}`}>
+                {KIND_LABELS[item.kind]}
+              </span>
               <Link href={`${adminRoute}/collections/${item.collection}/${item.id}`}>
                 <strong>{item.contact}</strong>
               </Link>

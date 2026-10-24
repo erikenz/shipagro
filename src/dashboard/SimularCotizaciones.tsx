@@ -29,18 +29,13 @@ export function SimularCotizaciones() {
     })
 
   return (
-    <div className="desk-feed-action">
-      <button
-        type="button"
-        className="desk-text-link"
-        onClick={run}
-        disabled={pending}
-      >
+    <>
+      <button type="button" className="desk-text-link" onClick={run} disabled={pending}>
         {pending ? 'Consultando…' : 'Actualizar precios ahora'}
       </button>
       <span className="desk-muted" role="status" aria-live="polite">
         {message}
       </span>
-    </div>
+    </>
   )
 }

@@ -54,7 +54,12 @@ export default async function ContactBook({
         <span className="desk-muted">{contacts.totalDocs} Contactos</span>
       </div>
       {contacts.docs.length ? (
-        <div className="desk-table-wrap" role="region" aria-label="Cartera de Contactos" tabIndex={0}>
+        <div
+          className="desk-table-wrap"
+          role="region"
+          aria-label="Cartera de Contactos"
+          tabIndex={0}
+        >
           <table className="desk-table">
             <thead>
               <tr>
@@ -66,20 +71,22 @@ export default async function ContactBook({
             </thead>
             <tbody>
               {contacts.docs.map((contact) => {
-                const active = triggers?.docs.filter((trigger) => {
-                  const contactID = typeof trigger.contact === 'object'
-                    ? trigger.contact.id
-                    : trigger.contact
-                  return contactID === contact.id
-                }) ?? []
+                const active =
+                  triggers?.docs.filter((trigger) => {
+                    const contactID =
+                      typeof trigger.contact === 'object' ? trigger.contact.id : trigger.contact
+                    return contactID === contact.id
+                  }) ?? []
                 const trigger = active[0]
-                const instrument = trigger && typeof trigger.instrument === 'object'
-                  ? trigger.instrument
-                  : null
+                const instrument =
+                  trigger && typeof trigger.instrument === 'object' ? trigger.instrument : null
                 return (
                   <tr key={contact.id}>
                     <td>
-                      <Link className="desk-contact" href={`${adminRoute}/collections/contacts/${contact.id}`}>
+                      <Link
+                        className="desk-contact"
+                        href={`${adminRoute}/collections/contacts/${contact.id}`}
+                      >
                         {contact.name}
                       </Link>
                       <span className="desk-sub">{contact.locality || 'Sin localidad'}</span>
@@ -90,19 +97,24 @@ export default async function ContactBook({
                           {instrument?.symbol ?? 'Ver precio gatillo'}
                           <span className="desk-sub desk-mono">
                             {formatPrice(trigger.targetPrice)} {instrument?.currency ?? '—'}/t
-                            {' · '}{trigger.side === 'venta' ? 'Venta' : 'Compra'}
+                            {' · '}
+                            {trigger.side === 'venta' ? 'Venta' : 'Compra'}
                           </span>
                           {active.length > 1 && (
                             <span className="desk-sub">+{active.length - 1} Precios gatillo</span>
                           )}
                         </Link>
-                      ) : <span className="desk-muted">Sin precios gatillo activos</span>}
+                      ) : (
+                        <span className="desk-muted">Sin precios gatillo activos</span>
+                      )}
                     </td>
                     <td className="desk-mono">
                       {trigger?.validUntil ? formatDay(trigger.validUntil) : '—'}
                     </td>
                     <td>
-                      <span className={`desk-chip${trigger?.status === 'alcanzado' ? ' desk-chip-amber' : ''}`}>
+                      <span
+                        className={`desk-chip${trigger?.status === 'alcanzado' ? ' desk-chip-amber' : ''}`}
+                      >
                         {trigger ? labelOf(TRIGGER_STATUSES, trigger.status) : 'Sin activo'}
                       </span>
                     </td>

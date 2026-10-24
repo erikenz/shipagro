@@ -28,17 +28,43 @@
   font-size: 14px;
   line-height: 1.45;
 
-  *, *::before, *::after { box-sizing: border-box; }
-  h1, h2, p, dl, dd { margin: 0; }
-  a { color: inherit; text-decoration: none; }
-  a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  h1,
+  h2,
+  p,
+  dl,
+  dd {
+    margin: 0;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
     outline: 2px solid var(--desk-accent);
     outline-offset: 3px;
   }
-  button { font: inherit; }
-  .desk-muted { color: var(--desk-muted); font-size: 12.5px; }
-  .desk-mono { font-family: var(--desk-font-data); font-variant-numeric: tabular-nums; }
+  button {
+    font: inherit;
+  }
+  .desk-muted {
+    color: var(--desk-muted);
+    font-size: 12.5px;
+  }
+  .desk-mono {
+    font-family: var(--desk-font-data);
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 html[data-theme='dark'] .trading-desk {
@@ -58,8 +84,15 @@ html[data-theme='dark'] .trading-desk {
 }
 
 .trading-desk {
-  .desk-top, .desk-brand, .desk-status, .desk-panel-heading, .desk-panel-footer,
-  .desk-footer, .desk-quote, .desk-price-row, .desk-alert-top, .desk-feed-action {
+  .desk-top,
+  .desk-brand,
+  .desk-status,
+  .desk-panel-heading,
+  .desk-panel-footer,
+  .desk-footer,
+  .desk-quote,
+  .desk-price-row,
+  .desk-alert-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -67,12 +100,28 @@ html[data-theme='dark'] .trading-desk {
     flex-wrap: wrap;
   }
 
-  .desk-top { padding-bottom: 2px; }
+  .desk-top {
+    padding-bottom: 2px;
+  }
   .desk-brand {
     justify-content: flex-start;
-    svg { width: 28px; height: 28px; flex: none; }
-    h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; }
-    > span { border-left: 1px solid var(--desk-line); padding-left: 10px; color: var(--desk-muted); font-size: 13px; }
+    svg {
+      width: 28px;
+      height: 28px;
+      flex: none;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    > span {
+      border-left: 1px solid var(--desk-line);
+      padding-left: 10px;
+      color: var(--desk-muted);
+      font-size: 13px;
+    }
   }
   .desk-status {
     justify-content: flex-end;
@@ -81,8 +130,16 @@ html[data-theme='dark'] .trading-desk {
     max-width: 520px;
     gap: 4px 10px;
   }
-  .desk-status-detail { flex-basis: 100%; text-align: right; overflow-wrap: anywhere; }
-  .desk-feed-action { justify-content: flex-end; }
+  .desk-status-detail {
+    flex-basis: 100%;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+  .desk-footer-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
   .desk-live {
     display: inline-flex;
     align-items: center;
@@ -92,10 +149,21 @@ html[data-theme='dark'] .trading-desk {
     background: var(--desk-accent-soft);
     color: var(--desk-accent);
     font-weight: 600;
-    i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
   }
-  .desk-live-cerrado { background: var(--desk-surface); color: var(--desk-muted); }
-  .desk-live-sin-actualizar { background: var(--desk-amber-soft); color: var(--desk-amber-ink); }
+  .desk-live-cerrado {
+    background: var(--desk-surface);
+    color: var(--desk-muted);
+  }
+  .desk-live-sin-actualizar {
+    background: var(--desk-amber-soft);
+    color: var(--desk-amber-ink);
+  }
 
   .desk-due {
     display: flex;
@@ -106,8 +174,21 @@ html[data-theme='dark'] .trading-desk {
     border: 1px solid var(--desk-line);
     border-radius: 10px;
     background: var(--desk-surface);
-    h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--desk-muted); }
-    ul { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+    h2 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--desk-muted);
+    }
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
     li a {
       display: flex;
       align-items: baseline;
@@ -119,11 +200,21 @@ html[data-theme='dark'] .trading-desk {
       padding: 5px 10px;
       font-size: 13px;
     }
-    time { font-family: var(--desk-font-data); font-weight: 600; color: var(--desk-amber-ink); }
-    li span { color: var(--desk-muted); }
+    time {
+      font-family: var(--desk-font-data);
+      font-weight: 600;
+      color: var(--desk-amber-ink);
+    }
+    li span {
+      color: var(--desk-muted);
+    }
   }
 
-  .desk-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 12px; }
+  .desk-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 12px;
+  }
   .desk-panel {
     display: flex;
     flex-direction: column;
@@ -136,10 +227,21 @@ html[data-theme='dark'] .trading-desk {
   }
   .desk-panel-heading {
     align-items: baseline;
-    h2 { font-size: 16px; font-weight: 700; letter-spacing: -0.005em; line-height: 1.4; }
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      line-height: 1.4;
+    }
   }
-  .desk-panel-footer { margin-top: auto; padding-top: 4px; font-size: 12px; }
-  .desk-intro { font-size: 15px; }
+  .desk-panel-footer {
+    margin-top: auto;
+    padding-top: 4px;
+    font-size: 12px;
+  }
+  .desk-intro {
+    font-size: 15px;
+  }
   .desk-capture {
     display: grid;
     justify-items: start;
@@ -149,9 +251,13 @@ html[data-theme='dark'] .trading-desk {
     border: 1px dashed var(--desk-line);
     border-radius: 10px;
     background: var(--desk-surface-2);
-    p { max-width: 48ch; color: var(--desk-muted); }
+    p {
+      max-width: 48ch;
+      color: var(--desk-muted);
+    }
   }
-  .desk-eyebrow, .desk-quote-side dt {
+  .desk-eyebrow,
+  .desk-quote-side dt {
     display: block;
     color: var(--desk-muted);
     font-size: 11.5px;
@@ -165,8 +271,14 @@ html[data-theme='dark'] .trading-desk {
     border-radius: 999px;
     padding: 10px 16px;
     font-weight: 600;
-    &.desk-button-primary { background: var(--desk-accent); color: var(--desk-accent-ink); }
-    &:hover { text-decoration: none; filter: brightness(1.1); }
+    &.desk-button-primary {
+      background: var(--desk-accent);
+      color: var(--desk-accent-ink);
+    }
+    &:hover {
+      text-decoration: none;
+      filter: brightness(1.1);
+    }
   }
   .desk-text-link {
     background: none;
@@ -178,18 +290,44 @@ html[data-theme='dark'] .trading-desk {
     cursor: pointer;
     width: fit-content;
     font-size: 12.5px;
-    &:disabled { opacity: 0.6; cursor: wait; }
+    &:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
   }
 
-  .desk-ticker { font-family: var(--desk-font-data); font-size: 11px; color: var(--desk-muted); overflow-wrap: anywhere; }
-  .desk-quote { align-items: flex-end; gap: 16px; }
-  .desk-price-row { justify-content: flex-start; align-items: baseline; gap: 8px; }
-  .desk-price { font-family: var(--desk-font-data); font-size: 44px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .desk-ticker {
+    font-family: var(--desk-font-data);
+    font-size: 11px;
+    color: var(--desk-muted);
+    overflow-wrap: anywhere;
+  }
+  .desk-quote {
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .desk-price-row {
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .desk-price {
+    font-family: var(--desk-font-data);
+    font-size: 44px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
   .desk-quote-side {
     display: flex;
     flex-wrap: wrap;
     gap: 10px 22px;
-    dd { font-family: var(--desk-font-data); font-size: 15px; font-weight: 500; }
+    dd {
+      font-family: var(--desk-font-data);
+      font-size: 15px;
+      font-weight: 500;
+    }
   }
   .desk-chart {
     display: block;
@@ -197,12 +335,31 @@ html[data-theme='dark'] .trading-desk {
     height: auto;
     margin-top: auto;
     overflow: visible;
-    text { fill: var(--desk-muted); font-family: var(--desk-font-data); font-size: 10px; }
+    text {
+      fill: var(--desk-muted);
+      font-family: var(--desk-font-data);
+      font-size: 10px;
+    }
   }
-  .desk-chart-grid { stroke: var(--desk-line); stroke-width: 1; }
-  .desk-chart-area { fill: var(--desk-chart-fill); }
-  .desk-chart-line { fill: none; stroke: var(--desk-accent); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
-  .desk-chart-dot { fill: var(--desk-accent); stroke: var(--desk-surface); stroke-width: 2.5; }
+  .desk-chart-grid {
+    stroke: var(--desk-line);
+    stroke-width: 1;
+  }
+  .desk-chart-area {
+    fill: var(--desk-chart-fill);
+  }
+  .desk-chart-line {
+    fill: none;
+    stroke: var(--desk-accent);
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .desk-chart-dot {
+    fill: var(--desk-accent);
+    stroke: var(--desk-surface);
+    stroke-width: 2.5;
+  }
   .desk-chart-empty {
     display: grid;
     place-content: center;
@@ -215,10 +372,32 @@ html[data-theme='dark'] .trading-desk {
     background: var(--desk-surface-2);
   }
 
-  .desk-count { font-family: var(--desk-font-data); font-size: 12px; font-weight: 600; background: var(--desk-surface-2); border: 1px solid var(--desk-line); border-radius: 999px; padding: 1px 8px; }
-  .desk-count-on { background: var(--desk-amber-soft); color: var(--desk-amber-ink); border-color: var(--desk-amber); }
-  .desk-empty { color: var(--desk-muted); font-size: 13.5px; max-width: 60ch; }
-  .desk-alert-list { display: grid; gap: 10px; list-style: none; margin: 0; padding: 0; }
+  .desk-count {
+    font-family: var(--desk-font-data);
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--desk-surface-2);
+    border: 1px solid var(--desk-line);
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .desk-count-on {
+    background: var(--desk-amber-soft);
+    color: var(--desk-amber-ink);
+    border-color: var(--desk-amber);
+  }
+  .desk-empty {
+    color: var(--desk-muted);
+    font-size: 13.5px;
+    max-width: 60ch;
+  }
+  .desk-alert-list {
+    display: grid;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
   .desk-alert {
     display: grid;
     gap: 6px;
@@ -230,58 +409,158 @@ html[data-theme='dark'] .trading-desk {
   .desk-alert-hit {
     background: var(--desk-amber-soft);
     border-color: var(--desk-amber);
-    .desk-alert-top, .desk-alert-meta, .desk-text-link { color: var(--desk-amber-ink); }
+    .desk-alert-top,
+    .desk-alert-meta,
+    .desk-text-link {
+      color: var(--desk-amber-ink);
+    }
   }
-  .desk-alert-top { align-items: baseline; font-size: 13px; overflow-wrap: anywhere; }
-  .desk-alert-top time { font-family: var(--desk-font-data); font-size: 11.5px; }
-  .desk-alert-contact { font-size: 15px; }
-  .desk-alert-meta { font-size: 12.5px; color: var(--desk-muted); }
-  .desk-alert .desk-text-link { margin-top: 4px; font-weight: 600; }
+  .desk-alert-top {
+    align-items: baseline;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+  .desk-alert-top time {
+    font-family: var(--desk-font-data);
+    font-size: 11.5px;
+  }
+  .desk-alert-contact {
+    font-size: 15px;
+  }
+  .desk-alert-meta {
+    font-size: 12.5px;
+    color: var(--desk-muted);
+  }
+  .desk-alert .desk-text-link {
+    margin-top: 4px;
+    font-weight: 600;
+  }
 
-  .desk-table-wrap { overflow-x: auto; }
+  .desk-table-wrap {
+    overflow-x: auto;
+  }
   .desk-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--desk-muted); font-weight: 600; padding: 0 10px 8px 0; border-bottom: 1px solid var(--desk-line); white-space: nowrap; }
-    td { padding: 10px 10px 10px 0; border-bottom: 1px solid var(--desk-line); vertical-align: top; }
-    th:last-child, td:last-child { padding-right: 0; }
-    tr:last-child td { border-bottom: 0; }
-    .desk-mono { white-space: nowrap; }
+    th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--desk-muted);
+      font-weight: 600;
+      padding: 0 10px 8px 0;
+      border-bottom: 1px solid var(--desk-line);
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 10px 10px 0;
+      border-bottom: 1px solid var(--desk-line);
+      vertical-align: top;
+    }
+    th:last-child,
+    td:last-child {
+      padding-right: 0;
+    }
+    tr:last-child td {
+      border-bottom: 0;
+    }
+    .desk-mono {
+      white-space: nowrap;
+    }
   }
-  .desk-contact { font-weight: 600; }
-  .desk-sub { display: block; color: var(--desk-muted); font-size: 11.5px; margin-top: 2px; }
-  .desk-chip { display: inline-block; width: fit-content; font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; background: var(--desk-surface-2); color: var(--desk-muted); border: 1px solid var(--desk-line); }
-  .desk-chip-amber { background: var(--desk-amber-soft); color: var(--desk-amber-ink); border-color: var(--desk-amber); }
+  .desk-contact {
+    font-weight: 600;
+  }
+  .desk-sub {
+    display: block;
+    color: var(--desk-muted);
+    font-size: 11.5px;
+    margin-top: 2px;
+  }
+  .desk-chip {
+    display: inline-block;
+    width: fit-content;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+    background: var(--desk-surface-2);
+    color: var(--desk-muted);
+    border: 1px solid var(--desk-line);
+  }
+  .desk-chip-amber {
+    background: var(--desk-amber-soft);
+    color: var(--desk-amber-ink);
+    border-color: var(--desk-amber);
+  }
 
-  .desk-pending { grid-column: 1 / -1; }
+  .desk-pending {
+    grid-column: 1 / -1;
+  }
   .desk-pending-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    li { display: grid; grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1fr) auto; align-items: center; gap: 8px 14px; padding: 10px 0; border-top: 1px solid var(--desk-line); }
-    li > * { min-width: 0; overflow-wrap: anywhere; }
+    li {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px 14px;
+      padding: 10px 0;
+      border-top: 1px solid var(--desk-line);
+    }
+    li > * {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   }
-  .desk-footer { color: var(--desk-muted); font-size: 12px; }
+  .desk-footer {
+    color: var(--desk-muted);
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 1100px) {
   .trading-desk {
-    .desk-grid { grid-template-columns: minmax(0, 1fr); }
-    .desk-status { justify-content: flex-start; }
-    .desk-status-detail { text-align: left; }
-    .desk-chart { max-height: 220px; }
+    .desk-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .desk-status {
+      justify-content: flex-start;
+    }
+    .desk-status-detail {
+      text-align: left;
+    }
+    .desk-chart {
+      max-height: 220px;
+    }
   }
 }
 
 @media (max-width: 520px) {
   .trading-desk {
     padding: 10px;
-    .desk-brand > span { display: none; }
-    .desk-panel { padding: 14px; }
-    .desk-price { font-size: 36px; }
-    .desk-pending-list li { grid-template-columns: minmax(0, 1fr); }
-    .desk-due li, .desk-due li a { width: 100%; }
-    .desk-table { min-width: 520px; }
+    .desk-brand > span {
+      display: none;
+    }
+    .desk-panel {
+      padding: 14px;
+    }
+    .desk-price {
+      font-size: 36px;
+    }
+    .desk-pending-list li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .desk-due li,
+    .desk-due li a {
+      width: 100%;
+    }
+    .desk-table {
+      min-width: 520px;
+    }
   }
 }
