@@ -23,6 +23,9 @@ const membership = (rows: unknown): Map<string, string> => {
   if (!Array.isArray(rows)) return map
   for (const row of rows as { tenant?: unknown; role?: unknown }[]) {
     const tenantID = relationID(row?.tenant)
+    if (tenantID && map.has(tenantID)) {
+      throw forbidden('Cada Empresa puede aparecer una sola vez por Usuario.')
+    }
     if (tenantID) map.set(tenantID, String(row.role ?? ''))
   }
   return map
@@ -84,6 +87,14 @@ export const guardUserChange: CollectionBeforeChangeHook<User> = ({ data, operat
     throw forbidden('Solo un Administrador puede crear Usuarios.')
   }
 
+  // Resetting another Empresa's Usuario password would give access to that Empresa.
+  if (originalDoc && originalDoc.id !== editor.id) {
+    const foreign = [...membership(originalDoc.tenants).keys()].some((id) => !administered.includes(id))
+    if (originalDoc.superAdmin || foreign) {
+      throw forbidden('Solo el propio Usuario o un super-admin puede editar esta cuenta compartida.')
+    }
+  }
+
   if (operation === 'create' || 'tenants' in data) {
     const before = membership(operation === 'create' ? [] : originalDoc?.tenants)
     const after = membership(operation === 'create' || 'tenants' in data ? data.tenants : originalDoc?.tenants)
@@ -114,7 +125,7 @@ export const guardUserDelete: CollectionBeforeDeleteHook = async ({ id, req }) =
   const target = await req.payload.findByID({ collection: 'users', id, depth: 0, overrideAccess: true, req })
   const administered = administeredIDs(editor)
   const foreign = [...membership(target.tenants).keys()].some((tenantID) => !administered.includes(tenantID))
-  if (foreign) {
-    throw forbidden('Este Usuario también pertenece a otra Empresa: quitalo de la tuya en lugar de borrarlo.')
+  if (target.superAdmin || foreign) {
+    throw forbidden('Solo un super-admin puede administrar esta cuenta compartida.')
   }
 }

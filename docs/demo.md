@@ -10,7 +10,7 @@ About 5 minutes. Run `pnpm seed`, then `pnpm dev`, and open `/admin`. Every logi
 | `carla@norte.test` | Carla Ruiz | Acopio del Norte SRL | Administrador |
 | `diego@norte.test` | Diego Paz | Acopio del Norte SRL | Comercial |
 
-The seed loads 15 Contactos, 9 Operaciones (one per Etapa, two overdue, one due today, two a fijar) and 4 Precios gatillo 1–3% from the latest Cotización:
+The seed loads 15 Contactos, 9 Operaciones (covering every Etapa, three overdue, one due today, two a fijar) and 4 Precios gatillo 1–3% from the latest Cotización:
 
 | Empresa | Contacto | Instrumento | Lado | Último | Objetivo | Cerca desde |
 |---|---|---|---|---|---|---|
@@ -23,7 +23,7 @@ The seed loads 15 Contactos, 9 Operaciones (one per Etapa, two overdue, one due 
 
 Log in as `bruno@pampa.test`.
 
-- The dashboard shows **Mis pendientes**: the soja Operación with Juan Pérez (Confirmada, vencida ayer) and Sofía Bianchi's (Registrada, vencida hace 3 días) on top.
+- The dashboard shows **Mis pendientes**: Sofía Bianchi's soja Operación (Registrada, vencida hace 3 días), followed by Juan Pérez's (Confirmada, vencida ayer).
 - **Operaciones** lists only Corredora Pampa SA. Nothing from Acopio del Norte SRL appears anywhere.
 - **Precios gatillo** shows Juan Pérez's venta at 325 for SOJ.ROS/MAY27, Activo.
 
@@ -31,9 +31,9 @@ Log in as `bruno@pampa.test`.
 
 In the other window, log in as `admin@shipagro.test` and open **Cotizaciones → Crear nuevo**:
 
-- Instrumento `SOJ.ROS/MAY27`, Precio `322`, Origen `Manual`, Fecha de operación **now** (the rules ignore trades older than 5 minutes).
+- Instrumento `SOJ.ROS/MAY27`, Precio `322`, Fuente `Manual`, Hora de la operación **now** (the rules ignore trades older than 5 minutes).
 
-Back in Bruno's window, refresh: an **Alerta cerca** for Juan Pérez appears under open Alertas, and Bruno gets the email (with no SMTP set, the preview link is in the `pnpm dev` console). Marta Gómez's trigger in Norte stays quiet: 322 is below 99% of 327.
+Back in Bruno's window, refresh: an **Alerta cerca** for Juan Pérez appears under open Alertas, and Bruno gets the email. With no SMTP set, log into https://ethereal.email using the test inbox credentials printed by the sending process (`pnpm dev` for manual Cotizaciones, `pnpm feed` for reMarkets). Each process can have its own test inbox. Marta Gómez's trigger in Norte stays quiet: 322 is below 99% of 327.
 
 ## 3. The price arrives (super-admin, 1 min)
 
@@ -51,5 +51,5 @@ Optional: repeat steps 2–3 with `TRI.ROS/DIC26` at `208` then `206` to show a 
 ## 5. Each Empresa stays apart (1 min)
 
 - As `diego@norte.test` (Comercial), open **Usuarios**: there's no "Crear nuevo", and editing Carla fails.
-- As `ana@pampa.test` (Administrador), open Bruno and try to add *Acopio del Norte SRL* under **Empresas**: saving fails with "Solo podés asignar, quitar o cambiar el rol de Empresas donde sos Administrador." The super-admin checkbox is read-only for her.
+- As `ana@pampa.test` (Administrador), open Bruno: only Corredora Pampa SA is available under **Empresas**, and the super-admin checkbox is read-only. An API attempt to assign Acopio del Norte SRL is also rejected with "Solo podés asignar, quitar o cambiar el rol de Empresas donde sos Administrador."
 - As `admin@shipagro.test`, the Empresa selector in the sidebar switches between both Empresas.
