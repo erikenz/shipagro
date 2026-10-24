@@ -112,7 +112,7 @@ When an Operación moves to its next Etapa, the Responsable stays the same and t
 
 ## Alert email
 
-Payload's nodemailer adapter, using SMTP settings from the environment when they are set and ethereal.email otherwise (Payload's development default, which logs preview links to the console). The email is in Spanish and shows the Contacto, the Instrumento, the price and trade time, bid and offer, the source label, and a link to the Alerta.
+Payload's nodemailer adapter, using SMTP settings from the environment when they are set and ethereal.email otherwise (Payload's development default, which logs the test inbox login details to the console). The email is in Spanish and shows the Contacto, the Instrumento, the price and trade time, bid and offer, the source label, and a link to the Alerta. Set `SERVER_URL` to the app's URL for email links; locally it defaults to `http://localhost:3000`.
 
 ## Feed
 

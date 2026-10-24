@@ -45,7 +45,8 @@ export async function sendAlertEmail(req: PayloadRequest, input: AlertEmailInput
   const side = labelOf(TRIGGER_SIDES, trigger.side).toLowerCase()
   const source = labelOf(QUOTE_SOURCES, quote.source)
   const path = `/admin/collections/alerts/${alert.id}`
-  const link = `${req.payload.config.serverURL || ''}${path}`
+  const baseURL = req.payload.config.serverURL || process.env.SERVER_URL || 'http://localhost:3000'
+  const link = new URL(path, baseURL).href
 
   const subject = `${alert.kind === 'alcanzado' ? 'Alcanzado' : 'Cerca'}: ${contact.name} · ${instrument.symbol} a ${formatPrice(quote.price, currency)}`
 
