@@ -263,6 +263,38 @@ All **Confirmed** from [D1], [D2], [D4], [D6], and [D7].
 
 **Trading API: REST snapshot.** `GET /rest/marketdata/get?marketId=ROFX&symbol=<ticker>&entries=BI,OF,LA,OP,CL,SE,OI&depth=<n>` ([D1]). **Confirmed.**
 
+**Trading API: response examples.** From the spec's reMarkets examples ([P5]), reformatted. **Confirmed.**
+
+`marketdata/get` (here for `DLR/DIC23`, `depth=3`). `LA`, `SE`, `CL` and `OI` are objects whose `date` is epoch milliseconds, `OP` is a bare number, and `BI`/`OF` are arrays, best price first:
+
+```json
+{"status":"OK",
+ "marketData":{
+   "LA":{"price":179.85,"size":4,"date":1669995044232},
+   "SE":{"price":180.3,"size":null,"date":1669852800000},
+   "CL":{"price":180.35,"size":null,"date":1669852800000},
+   "OI":{"price":null,"size":217596,"date":1664150400000},
+   "OP":180.35,
+   "BI":[{"price":179.75,"size":275},{"price":178.95,"size":514}],
+   "OF":[{"price":179.8,"size":1000},{"price":180.35,"size":1000}]},
+ "depth":2,"aggregated":true}
+```
+
+`GET /rest/instruments/details` takes no parameters and returns every instrument. The top-level `symbol` is `null`; the ticker is in `instrumentId.symbol`. One entry, trimmed:
+
+```json
+{"status":"OK",
+ "instruments":[
+   {"symbol":null,
+    "segment":{"marketSegmentId":"DDA","marketId":"ROFX"},
+    "lowLimitPrice":0.1,"highLimitPrice":100,"minPriceIncrement":0.1,
+    "contractMultiplier":100,"maturityDate":"20231123","currency":"USD",
+    "securityDescription":"TRI.ROS/DIC23 352 C","cficode":"OCAFXS",
+    "instrumentId":{"marketId":"ROFX","symbol":"TRI.ROS/DIC23 352 C"}}]}
+```
+
+`GET /rest/instruments/bySegment?MarketSegmentID=DDA&MarketID=ROFX` returns only `{"status":"OK","instruments":[{"marketId":"ROFX","symbol":"..."}]}`. Errors come back as `{"status":"ERROR","description":"No tiene acceso a la cuenta 30","message":null}`. **Unknown:** what an entry looks like when it has no data, for example `LA` before the first trade of a contract; treat it as possibly missing or `null`.
+
 **Trading API: recommended consumption** ([P2]). **Confirmed** as recommendations; the limits actually enforced, and the penalties, are **Unknown**.
 
 | Call | Recommendation |

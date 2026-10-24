@@ -17,9 +17,10 @@ Read before changing code:
 - Payload 3's Local API skips access control by default. Code acting for a Usuario passes `overrideAccess: false` and `user`. System code (hooks reacting to a Cotización, the feed, the seed) runs with access skipped, so it sets `tenant` explicitly on every document it creates for an Empresa.
 - Hooks pass `req` to every Local API call they make, so the work shares one transaction.
 - Prefer `fetch`, `Intl` and what Payload already ships over new dependencies.
-- Tests live in `tests/**/*.spec.ts` (vitest, Node). Integration tests use the database in `DATABASE_URL`, create their own data with unique names, and delete it afterwards.
-- After changing fields or admin components, run `pnpm generate:types` / `pnpm generate:importmap` and commit the result. On a merge conflict in those generated files, regenerate them.
-- Done means `pnpm typecheck`, `pnpm lint` and `pnpm test` pass.
+- Put decisions in plain functions that tests can call without Payload running; hooks, the feed loop and admin components load data, call them, and save the result.
+- Tests live in `tests/` (vitest, Node). Unit tests (`*.spec.ts`) need no database. Integration tests (`*.int.spec.ts`) use the database in `DATABASE_URL`, create their own data with unique names, and delete it afterwards.
+- After changing fields or admin components, run `pnpm generate:types` / `pnpm generate:importmap` and commit the result; both work without a database. On a merge conflict in those generated files, regenerate them.
+- Done means `pnpm typecheck`, `pnpm lint` and `pnpm test:unit` pass. CI runs every test, integration tests included, against Postgres on each pull request.
 
 ## Feature ownership
 
@@ -33,10 +34,10 @@ Four features are built in parallel on separate branches, each tracked in a GitH
 | Datos y acceso | `src/seed/**`, `src/access/**`, `src/collections/Users.ts`, `src/collections/Tenants.ts`, `src/collections/Contacts.ts`, `src/graphics/**`, `src/app/(payload)/custom.scss`, `docs/import/**`, `docs/demo.md` |
 | Shared | `src/payload.config.ts`, `src/domain.ts`, `src/fields/**`, `package.json`, generated files |
 
-## Running in v0
+## Working in v0
 
-The v0 sandbox has no Docker, so it uses a hosted Postgres instead of `docker-compose.yml`:
+v0 chats run without a database, by design: write the code and the tests, check them with the commands above, and open a pull request with **Create PR** (Publish would merge into `main` and deploy).
 
-1. Connect Neon under Project Settings > Integrations; it sets `DATABASE_URL`.
-2. Add `PAYLOAD_SECRET` (any long random string) under Environment Variables as a non-sensitive variable; v0 can't read sensitive ones. The Feed also needs `A3_USERNAME` and `A3_PASSWORD`.
-3. Run `pnpm seed`, then use the logins it prints.
+- The v0 preview shows "cannot connect to Postgres". That's expected; leave the database configuration as it is.
+- Write the integration tests your issue asks for even though you can't run them; CI runs them on the pull request.
+- Running the app, the seed and the feed end to end, and checking that the features work together, happens after the pull requests are merged.
