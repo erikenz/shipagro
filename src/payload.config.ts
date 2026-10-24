@@ -22,7 +22,7 @@ import type { Config } from './payload-types'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// Without SMTP_HOST, development email goes to ethereal.email (preview links in the console).
+// Without SMTP_HOST, development email goes to ethereal.email (inbox login in the console).
 const smtp = process.env.SMTP_HOST
   ? {
       defaultFromAddress: process.env.SMTP_FROM || 'alertas@shipagro.local',

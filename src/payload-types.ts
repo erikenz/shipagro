@@ -214,7 +214,7 @@ export interface Contact {
 export interface Operation {
   id: number;
   tenant?: (number | null) | Tenant;
-  seller: number | Contact;
+  seller?: (number | null) | Contact;
   buyer?: (number | null) | Contact;
   grain: 'soja' | 'maiz' | 'trigo' | 'girasol' | 'sorgo' | 'cebada';
   tons?: number | null;

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated, superAdminOnly } from '@/access'
+import { alertOnQuote } from '@/alerts/onQuoteCreated'
 import { QUOTE_SOURCES } from '@/domain'
 
 // Cotización: a last-trade price written by the feed or entered by hand by the
@@ -10,6 +11,7 @@ export const Quotes: CollectionConfig = {
   labels: { singular: 'Cotización', plural: 'Cotizaciones' },
   admin: { defaultColumns: ['instrument', 'price', 'tradedAt', 'source'] },
   access: { create: superAdminOnly, read: authenticated, update: () => false, delete: superAdminOnly },
+  hooks: { afterChange: [alertOnQuote] },
   fields: [
     {
       name: 'instrument',

@@ -1,4 +1,5 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, RelationshipFieldSingleValidation } from 'payload'
+import { relationship } from 'payload/shared'
 
 import { authenticated } from '@/access'
 import { CURRENCIES, GRAINS, STAGES } from '@/domain'
@@ -16,7 +17,19 @@ export const Operations: CollectionConfig = {
   versions: true,
   hooks: { beforeChange: [setUpdatedBy] },
   fields: [
-    { name: 'seller', type: 'relationship', relationTo: 'contacts', label: 'Vendedor', required: true },
+    {
+      name: 'seller',
+      type: 'relationship',
+      relationTo: 'contacts',
+      label: 'Vendedor',
+      // A Precio gatillo de compra opens an Operación with only the Comprador known.
+      validate: ((value, options) => {
+        const data = options.data as { buyer?: unknown } | undefined
+        if (!value && !data?.buyer) return 'Indicá el Vendedor o el Comprador.'
+        // Keep Payload's relationship validation, including the Empresa filter.
+        return relationship(value, options)
+      }) satisfies RelationshipFieldSingleValidation,
+    },
     { name: 'buyer', type: 'relationship', relationTo: 'contacts', label: 'Comprador' },
     { name: 'grain', type: 'select', label: 'Grano', options: GRAINS, required: true },
     { name: 'tons', type: 'number', label: 'Toneladas', min: 0 },

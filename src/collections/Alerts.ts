@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated, superAdminOnly } from '@/access'
+import { applyResolution } from '@/alerts/resolution'
 import { ALERT_KINDS, RESOLUTIONS } from '@/domain'
 import { setUpdatedBy, updatedBy } from '@/fields/updatedBy'
 
@@ -12,7 +13,7 @@ export const Alerts: CollectionConfig = {
   admin: { defaultColumns: ['kind', 'priceTrigger', 'resolution', 'createdAt'] },
   access: { create: superAdminOnly, read: authenticated, update: authenticated, delete: superAdminOnly },
   versions: true,
-  hooks: { beforeChange: [setUpdatedBy] },
+  hooks: { beforeChange: [setUpdatedBy, applyResolution] },
   fields: [
     {
       name: 'priceTrigger',
