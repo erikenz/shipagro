@@ -1,3 +1,5 @@
 allowBuilds:
   esbuild: true
+patchedDependencies:
+  '@payloadcms/plugin-import-export@3.92.0': patches/@payloadcms__plugin-import-export@3.92.0.patch
 

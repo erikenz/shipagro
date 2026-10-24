@@ -54,8 +54,23 @@ export default buildConfig({
   // Tests run without an email adapter so they never reach the network.
   email: process.env.NODE_ENV === 'test' ? undefined : nodemailerAdapter(smtp),
   plugins: [
+    // Register file/result collections before multi-tenant adds its access rules.
+    importExportPlugin({
+      overrideImportCollection: ({ collection }) => ({
+        ...collection,
+        labels: { singular: 'Importación', plural: 'Importaciones' },
+      }),
+      overrideExportCollection: ({ collection }) => ({
+        ...collection,
+        labels: { singular: 'Exportación', plural: 'Exportaciones' },
+      }),
+      collections: [
+        { slug: 'contacts', export: { disableJobsQueue: true }, import: { disableJobsQueue: true } },
+        { slug: 'operations', export: { disableJobsQueue: true }, import: { disableJobsQueue: true } },
+      ],
+    }),
     multiTenantPlugin<Config>({
-      collections: { alerts: {}, contacts: {}, operations: {}, 'price-triggers': {} },
+      collections: { alerts: {}, contacts: {}, operations: {}, 'price-triggers': {}, imports: {}, exports: {} },
       // ADR 0001: removing an Empresa is a deliberate operation, not a side effect.
       cleanupAfterTenantDelete: false,
       tenantsArrayField: { includeDefaultField: false },
@@ -70,12 +85,6 @@ export default buildConfig({
           },
         },
       },
-    }),
-    importExportPlugin({
-      collections: [
-        { slug: 'contacts', export: { disableJobsQueue: true }, import: { disableJobsQueue: true } },
-        { slug: 'operations', export: { disableJobsQueue: true }, import: { disableJobsQueue: true } },
-      ],
     }),
   ],
 })
