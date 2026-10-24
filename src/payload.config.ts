@@ -16,11 +16,15 @@ import { PriceTriggers } from './collections/PriceTriggers'
 import { Quotes } from './collections/Quotes'
 import { Tenants } from './collections/Tenants'
 import { Users } from './collections/Users'
+import { feedTickEndpoints } from './feed/endpoint'
 import { FeedStatus } from './globals/FeedStatus'
+import { migrations } from './migrations'
 import type { Config } from './payload-types'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const usesMigrations = Boolean(process.env.NEON_PROJECT_ID || process.env.VERCEL || process.env.PAYLOAD_USE_MIGRATIONS)
 
 // Without SMTP_HOST, development email goes to ethereal.email (inbox login in the console).
 const smtp = process.env.SMTP_HOST
@@ -50,7 +54,16 @@ export default buildConfig({
   i18n: { fallbackLanguage: 'es', supportedLanguages: { es } },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
-  db: postgresAdapter({ pool: { connectionString: process.env.DATABASE_URL || '' } }),
+  // Local Docker Postgres syncs the schema on every dev start (push). A hosted database (Neon in
+  // v0 and on Vercel) uses the committed migrations instead, so dev and production never disagree;
+  // production applies pending ones at startup.
+  db: postgresAdapter({
+    pool: { connectionString: process.env.DATABASE_URL || '' },
+    push: !usesMigrations,
+    migrationDir: path.resolve(dirname, 'migrations'),
+    prodMigrations: migrations,
+  }),
+  endpoints: feedTickEndpoints,
   // Tests run without an email adapter so they never reach the network.
   email: process.env.NODE_ENV === 'test' ? undefined : nodemailerAdapter(smtp),
   plugins: [

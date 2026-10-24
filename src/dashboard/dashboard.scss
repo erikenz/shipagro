@@ -59,7 +59,7 @@ html[data-theme='dark'] .trading-desk {
 
 .trading-desk {
   .desk-top, .desk-brand, .desk-status, .desk-panel-heading, .desk-panel-footer,
-  .desk-footer, .desk-quote, .desk-price-row, .desk-alert-top {
+  .desk-footer, .desk-quote, .desk-price-row, .desk-alert-top, .desk-feed-action {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -82,6 +82,7 @@ html[data-theme='dark'] .trading-desk {
     gap: 4px 10px;
   }
   .desk-status-detail { flex-basis: 100%; text-align: right; overflow-wrap: anywhere; }
+  .desk-feed-action { justify-content: flex-end; }
   .desk-live {
     display: inline-flex;
     align-items: center;

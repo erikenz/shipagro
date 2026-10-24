@@ -1,8 +1,11 @@
 import type { ServerProps } from 'payload'
 
+import { isSuperAdmin } from '@/access'
+import { isLiveFeed } from '@/feed/a3Client'
 import { formatDay, formatTime } from '@/pendientes/time'
 
 import { feedState } from './market'
+import { SimularCotizaciones } from './SimularCotizaciones'
 
 const lastUpdate = (lastSuccessAt?: string | null) =>
   lastSuccessAt
@@ -12,17 +15,26 @@ const lastUpdate = (lastSuccessAt?: string | null) =>
 export default async function EstadoFeed({ payload, user }: Pick<ServerProps, 'payload' | 'user'>) {
   if (!user) return null
   const status = await payload.findGlobal({ slug: 'feed-status', overrideAccess: false, user })
-  const state = feedState(status.lastSuccessAt, new Date())
+  const live = isLiveFeed()
+  // The mock trades around the clock, so market hours only apply to the live feed.
+  const state = feedState(status.lastSuccessAt, new Date(), { ignoreMarketHours: !live })
 
   return (
-    <div className="desk-status" role="status">
+    <div className="desk-status">
       <span className={`desk-live desk-live-${state.kind}`}>
         <i aria-hidden="true" />
-        {state.kind === 'cerrado' ? 'Mercado cerrado' : state.kind === 'sin-actualizar' ? 'Precios sin actualizar' : 'Rueda abierta · Precios al día'}
+        {state.kind === 'cerrado'
+          ? 'Mercado cerrado'
+          : state.kind === 'sin-actualizar'
+            ? 'Precios sin actualizar'
+            : live ? 'Rueda abierta · Precios al día' : 'Simulación al día'}
       </span>
-      <span>A3 Mercados · reMarkets (prueba)</span>
+      <span>{live ? 'A3 Mercados · reMarkets (prueba)' : 'Precios simulados · Sin conexión a A3'}</span>
       <span className="desk-status-detail">{lastUpdate(status.lastSuccessAt)}</span>
-      {status.lastError && <span className="desk-status-detail">Último error del feed: {status.lastError}</span>}
+      {status.lastError && (
+        <span className="desk-status-detail">Último error del feed: {status.lastError}</span>
+      )}
+      {isSuperAdmin(user) ? <SimularCotizaciones /> : null}
     </div>
   )
 }

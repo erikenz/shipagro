@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import type { AdminViewServerProps, Where } from 'payload'
 
 import { GRAINS, STAGES } from '@/domain'
+import { isLiveFeed } from '@/feed/a3Client'
 import { argentinaDay, argentinaDayPlus, formatDay } from '@/pendientes/time'
 
 import AlertasAbiertas from './AlertasAbiertas'
@@ -113,7 +114,12 @@ export default async function Dashboard({ initPageResult }: AdminViewServerProps
       </div>
 
       <footer className="desk-footer">
-        <span>A3 Mercados · reMarkets (prueba) y Cotizaciones manuales. No se ejecutan órdenes.</span>
+        <span>
+          {isLiveFeed()
+            ? 'A3 Mercados · reMarkets (prueba) y Cotizaciones manuales.'
+            : 'Cotizaciones simuladas y manuales. No son datos de mercado reales.'}
+          {' '}No se ejecutan órdenes.
+        </span>
         <Refresh />
       </footer>
     </div>
