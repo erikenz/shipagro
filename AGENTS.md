@@ -17,10 +17,8 @@ Read before changing code:
 - Payload 3's Local API skips access control by default. Code acting for a Usuario passes `overrideAccess: false` and `user`. System code (hooks reacting to a Cotización, the feed, the seed) runs with access skipped, so it sets `tenant` explicitly on every document it creates for an Empresa.
 - Hooks pass `req` to every Local API call they make, so the work shares one transaction.
 - Prefer `fetch`, `Intl` and what Payload already ships over new dependencies.
-- Put decisions in plain functions that tests can call without Payload running; hooks, the feed loop and admin components load data, call them, and save the result.
-- Tests live in `tests/` (vitest, Node). Unit tests (`*.spec.ts`) need no database. Integration tests (`*.int.spec.ts`) use the database in `DATABASE_URL`, create their own data with unique names, and delete it afterwards.
 - After changing fields or admin components, run `pnpm generate:types` / `pnpm generate:importmap` and commit the result; both work without a database. On a merge conflict in those generated files, regenerate them.
-- Done means `pnpm typecheck`, `pnpm lint` and `pnpm test:unit` pass. CI runs every test, integration tests included, against Postgres on each pull request.
+- Done means the issue's Build steps are implemented, `pnpm typecheck` passes, and a pull request to `main` is open. This is a hackathon demo, so `pnpm typecheck` is the only check.
 
 ## Feature ownership
 
@@ -36,8 +34,7 @@ Four features are built in parallel on separate branches, each tracked in a GitH
 
 ## Working in v0
 
-v0 chats run without a database, by design: write the code and the tests, check them with the commands above, and open a pull request with **Create PR** (Publish would merge into `main` and deploy).
+v0 chats run without a database, by design: write the code and open a pull request with **Create PR** (Publish would merge into `main` and deploy).
 
 - The v0 preview shows "cannot connect to Postgres". That's expected; leave the database configuration as it is.
-- Write the integration tests your issue asks for even though you can't run them; CI runs them on the pull request.
 - Running the app, the seed and the feed end to end, and checking that the features work together, happens after the pull requests are merged.

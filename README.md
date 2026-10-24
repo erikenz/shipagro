@@ -15,5 +15,3 @@ Requires Node 24, pnpm and Docker.
    - `carla@norte.test` (Administrador) and `diego@norte.test` (Comercial): Acopio del Norte SRL
 5. `pnpm dev` and open http://localhost:3000/admin
 6. `pnpm feed` in a second terminal reads prices from reMarkets (needs `A3_USERNAME` and `A3_PASSWORD`).
-
-Checks: `pnpm typecheck`, `pnpm lint`, and `pnpm test` (needs the database running) or `pnpm test:unit` (only the tests that need no database).

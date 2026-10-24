@@ -58,13 +58,13 @@ Each module keeps a small interface over the work it hides.
 | Module | Interface | Hides |
 |---|---|---|
 | Feed (`src/feed/`) | `runFeed(payload)`: runs until stopped, writes a Cotización whenever an Instrumento's last trade changes, keeps `feed-status` current | reMarkets login and the daily token renewal; the daily Instrumento refresh (agro segment `DDA`, filtered to Rosario USD futures, with daily price limits); the one-request-per-second rotation over Instrumentos with an active Precio gatillo; retries. All A3 URLs and JSON stay in one thin client. |
-| Trigger rules (`src/alerts/evaluate.ts`) | `evaluate(trigger, quote, now)` returns none, cerca or alcanzado | The rules below. A pure function, unit-tested directly. |
+| Trigger rules (`src/alerts/evaluate.ts`) | `evaluate(trigger, quote, now)` returns none, cerca or alcanzado | The rules below, as a pure function. |
 | Alerting (`afterChange` hook on `quotes`) | Runs for every new Cotización, in whichever process wrote it | Finds the active Precios gatillo on that Instrumento across Empresas, evaluates each, saves the Alerta in the trigger's Empresa, updates the trigger's status, emails its Responsable. |
 | Resolución (hook on `alerts`) | Setting the Resolución on an Alerta alcanzado | confirmar: closes the trigger and opens an Operación in Etapa Concertada, prefilled from it; actualizar: a new Precio objetivo, watched from now; cancelar. Records who and when. |
 | Pendientes (`src/pendientes.ts`) | `listPendientes(payload, user)` returns a ranked list | The ranking below. |
 | Dashboard (admin `beforeDashboard` components) | The admin home page | Mis pendientes, open Alertas, feed status and "mercado cerrado". |
 
-The seam that matters is writing a Cotización. It has two adapters, the feed and the super-admin's manual entry, and everything after it is shared. That is why the demo works with the market closed, and what the alerting tests use.
+The seam that matters is writing a Cotización. It has two adapters, the feed and the super-admin's manual entry, and everything after it is shared. That is why the demo works with the market closed.
 
 ## Trigger rules
 
@@ -108,7 +108,6 @@ When an Operación moves to its next Etapa, the Responsable stays the same and t
 - Every Usuario sees and edits all Contactos, Operaciones, Precios gatillo and Alertas of their Empresa. Administradores also manage its Usuarios.
 - The super-admin sees every Empresa, manages Empresas and Instrumentos, and is the only one who can enter Cotizaciones by hand.
 - Payload 3's Local API skips access control by default. Code acting for a Usuario passes `overrideAccess: false` and the `user`. System code (the feed, the alerting hook, the seed script) scopes every write to an Empresa itself.
-- One integration test proves that an Alerta lands in its trigger's Empresa and that its email reaches only that Empresa's Responsable.
 - The multi-tenant plugin's `cleanupAfterTenantDelete` is off.
 
 ## Alert email

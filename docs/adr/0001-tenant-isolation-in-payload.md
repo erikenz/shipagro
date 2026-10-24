@@ -4,5 +4,5 @@ All Empresas share one Postgres schema. Every row an Empresa owns carries its te
 
 ## Consequences
 
-- Server code that runs as the system with `overrideAccess` (the price feed, seed scripts) skips access control, tenant filters included. It must scope every read and write to an Empresa itself, and a test checks that one Empresa can't see another's data.
+- Server code that runs as the system with `overrideAccess` (the price feed, seed scripts) skips access control, tenant filters included. It must scope every read and write to an Empresa itself.
 - The plugin's `cleanupAfterTenantDelete` is turned off: removing an Empresa is a deliberate, audited operation, not a side effect of deleting a row.
