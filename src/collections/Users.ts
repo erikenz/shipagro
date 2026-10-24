@@ -41,7 +41,9 @@ export const Users: CollectionConfig = {
   slug: 'users',
   labels: { singular: 'Usuario', plural: 'Usuarios' },
   admin: { useAsTitle: 'name', defaultColumns: ['name', 'email'] },
-  auth: true,
+  // The v0 preview embeds the admin in a cross-site iframe, where a Lax cookie is never sent back,
+  // so login "succeeds" and the next request is anonymous. Only there, use SameSite=None; Secure.
+  auth: process.env.V0_SANDBOX_URL ? { cookies: { sameSite: 'None', secure: true } } : true,
   access: { create: canCreateUser, read: canReadUser, update: canUpdateUser, delete: canDeleteUser },
   hooks: { beforeChange: [guardUserChange], beforeDelete: [guardUserDelete] },
   fields: [

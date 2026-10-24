@@ -21,8 +21,12 @@ export type FeedState =
   | { kind: 'sin-actualizar'; lastSuccessAt?: string | null }
   | { kind: 'al-dia'; lastSuccessAt: string }
 
-export const feedState = (lastSuccessAt: string | null | undefined, now: Date): FeedState => {
-  if (!isMarketOpen(now)) return { kind: 'cerrado', lastSuccessAt }
+export const feedState = (
+  lastSuccessAt: string | null | undefined,
+  now: Date,
+  { ignoreMarketHours = false }: { ignoreMarketHours?: boolean } = {},
+): FeedState => {
+  if (!ignoreMarketHours && !isMarketOpen(now)) return { kind: 'cerrado', lastSuccessAt }
   if (!lastSuccessAt || now.getTime() - new Date(lastSuccessAt).getTime() > STALE_AFTER_MS) {
     return { kind: 'sin-actualizar', lastSuccessAt }
   }
