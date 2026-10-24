@@ -17,9 +17,7 @@ const round1 = (value: number) => Number(value.toFixed(1))
  * target itself. Two clicks on the dashboard button therefore raise an Alerta cerca and then an
  * Alerta alcanzado, without reading a price from anywhere.
  *
- * Returns null when there is nothing left to approach: no active Precio gatillo, or a last price
- * already past the target (the hook has fired by then, so a simulated move backwards would only
- * confuse the list).
+ * Returns null only when there is no active Precio gatillo left to move.
  */
 export function nextDemoPrice(latest: number | null, triggers: ActiveTrigger[]): number | null {
   if (triggers.length === 0) return null
@@ -31,7 +29,11 @@ export function nextDemoPrice(latest: number | null, triggers: ActiveTrigger[]):
   const side = ventas.length > 0 ? 'venta' : 'compra'
   const target = side === 'venta' ? Math.min(...ventas) : Math.max(...compras)
 
-  if (latest !== null && (side === 'venta' ? latest >= target : latest <= target)) return null
+  // The price is already at or past the target, so there is nothing to approach. Repeat it with a
+  // fresh trade time instead: the Precio gatillo that made it active was created after the last
+  // trade, so the hook has not seen it yet and this tick is what fires it. Moving the price back
+  // would only confuse the list.
+  if (latest !== null && (side === 'venta' ? latest >= target : latest <= target)) return latest
 
   // Round inside the threshold, so the simulated price always lands on the firing side of it.
   const cerca =
