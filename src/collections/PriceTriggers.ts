@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '@/access'
+import { stampActivation } from '@/alerts/priceTriggerHooks'
 import { TRIGGER_SIDES, TRIGGER_STATUSES } from '@/domain'
 import { responsable } from '@/fields/responsable'
 import { setUpdatedBy, updatedBy } from '@/fields/updatedBy'
@@ -15,7 +16,7 @@ export const PriceTriggers: CollectionConfig = {
   },
   access: { create: authenticated, read: authenticated, update: authenticated, delete: authenticated },
   versions: true,
-  hooks: { beforeChange: [setUpdatedBy] },
+  hooks: { beforeChange: [setUpdatedBy, stampActivation] },
   fields: [
     { name: 'contact', type: 'relationship', relationTo: 'contacts', label: 'Contacto', required: true },
     {

@@ -16,7 +16,15 @@ export const Operations: CollectionConfig = {
   versions: true,
   hooks: { beforeChange: [setUpdatedBy] },
   fields: [
-    { name: 'seller', type: 'relationship', relationTo: 'contacts', label: 'Vendedor', required: true },
+    {
+      name: 'seller',
+      type: 'relationship',
+      relationTo: 'contacts',
+      label: 'Vendedor',
+      // A Precio gatillo de compra opens an Operación with only the Comprador known.
+      validate: (value: unknown, { data }: { data: Partial<{ buyer: unknown }> }) =>
+        value || data?.buyer ? true : 'Indicá el Vendedor o el Comprador.',
+    },
     { name: 'buyer', type: 'relationship', relationTo: 'contacts', label: 'Comprador' },
     { name: 'grain', type: 'select', label: 'Grano', options: GRAINS, required: true },
     { name: 'tons', type: 'number', label: 'Toneladas', min: 0 },
