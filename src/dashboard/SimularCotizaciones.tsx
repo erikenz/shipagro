@@ -5,9 +5,11 @@ import { useState, useTransition } from 'react'
 
 import { mutedStyle } from './styles'
 
-type TickResult = { polled?: number; error?: string }
+type TickResult = { quotes?: number; alerts?: number; error?: string }
 
-/** Super-admin only: runs one pass of the (mock) feed so new Cotizaciones and Alertas appear. */
+const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
+
+/** Runs one pass of the demo market so new Cotizaciones and Alertas appear. Any Usuario can. */
 export function SimularCotizaciones() {
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
@@ -19,10 +21,12 @@ export function SimularCotizaciones() {
       try {
         const res = await fetch('/api/feed/tick', { method: 'POST', credentials: 'include' })
         const body = (await res.json()) as TickResult
+        const { quotes = 0, alerts = 0 } = body
         setMessage(
           body.error
             ? `Error: ${body.error}`
-            : `Listo: ${body.polled ?? 0} instrumento(s) consultado(s).`,
+            : `Listo: ${count(quotes, 'Cotización simulada', 'Cotizaciones simuladas')} y ` +
+                `${count(alerts, 'Alerta nueva', 'Alertas nuevas')}.`,
         )
         router.refresh()
       } catch {
@@ -39,7 +43,7 @@ export function SimularCotizaciones() {
         onClick={run}
         disabled={pending}
       >
-        {pending ? 'Consultando…' : 'Actualizar precios ahora'}
+        {pending ? 'Simulando…' : 'Simular cotizaciones'}
       </button>
       <span style={mutedStyle} role="status" aria-live="polite">
         {message}

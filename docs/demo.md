@@ -1,6 +1,6 @@
 # Demo script
 
-About 5 minutes. Run `pnpm seed`, then `pnpm dev`, and open `/admin`. Every login uses the password `demo1234`. Use two browser windows (one normal, one private) so the super-admin and a Usuario can be logged in at the same time.
+About 5 minutes. Run `pnpm seed`, then `pnpm dev`, and open `/admin`. Every login uses the password `demo1234`. Use two browser windows (one normal, one private) when the script shows two logins at once.
 
 | Login | Who | Empresa | Role |
 |---|---|---|---|
@@ -27,20 +27,26 @@ Log in as `bruno@pampa.test`.
 - **Operaciones** lists only Corredora Pampa SA. Nothing from Acopio del Norte SRL appears anywhere.
 - **Precios gatillo** shows Juan Pérez's venta at 325 for SOJ.ROS/MAY27, Activo.
 
-## 2. The price gets close (super-admin, 1 min)
+## 2. The price gets close (1 click)
 
-In the other window, log in as `admin@shipagro.test` and open **Cotizaciones → Crear nuevo**:
+The prices are simulated: no A3 connection is involved, and any Usuario can move them. On the dashboard, in the **Precios** card, press **Simular cotizaciones**.
 
-- Instrumento `SOJ.ROS/MAY27`, Precio `322`, Fuente `Manual`, Hora de la operación **now** (the rules ignore trades older than 5 minutes).
+- Each Instrumento with an active Precio gatillo gets a new Cotización at its *cerca* price: SOJ.ROS/MAY27 at 321,8, MAI.ROS/ABR27 at 188,1, TRI.ROS/DIC26 at 208.
+- Three **Alertas cerca** appear under open Alertas: Juan Pérez (venta 325), Cooperativa Agrícola Unión (venta 190) and Molino San Martín SA (compra 206). Their Responsables get the email.
+- Marta Gómez's trigger in Norte stays quiet: 321,8 is below 99% of 327.
+- The **Cotizaciones** list shows the simulated trades, and the Precios card says **Precios al día**.
 
-Back in Bruno's window, refresh: an **Alerta cerca** for Juan Pérez appears under open Alertas, and Bruno gets the email. With no SMTP set, log into https://ethereal.email using the test inbox credentials printed by the sending process (`pnpm dev` for manual Cotizaciones, `pnpm feed` for reMarkets). Each process can have its own test inbox. Marta Gómez's trigger in Norte stays quiet: 322 is below 99% of 327.
+With no SMTP set, email goes to ethereal.email; the test inbox credentials are printed by `pnpm dev`. Emails are the only part of this step that can't be shown from the deployed app.
 
-## 3. The price arrives (super-admin, 1 min)
+## 3. The price arrives (1 click)
 
-Enter another Cotización: `SOJ.ROS/MAY27`, `325`, Manual, now.
+Press **Simular cotizaciones** again.
 
-- Bruno: an **Alerta alcanzado** for Juan Pérez, and the Precio gatillo moves to **Alcanzado**.
-- Log in as `diego@norte.test`: an **Alerta cerca** for Marta Gómez (325 ≥ 323,73), and nothing about Juan Pérez.
+- The same Instrumentos trade at their targets: SOJ.ROS/MAY27 at 325, MAI.ROS/ABR27 at 190, TRI.ROS/DIC26 at 206.
+- Their Precios gatillo move to **Alcanzado**, with an **Alerta alcanzado** for each, and Juan Pérez's soja trigger also brings Marta Gómez's in Norte to **cerca** (325 ≥ 323,73).
+- Press it a third time and SOJ.ROS/MAY27 trades at 327: **Alcanzado** for Marta Gómez, and nothing new for Pampa.
+
+Prefer typing an exact price? The super-admin can still do it in **Cotizaciones → Crear**, Fuente `Manual`, Hora de la operación **now** (the rules ignore trades older than 5 minutes).
 
 ## 4. Close the deal (Bruno, 1 min)
 

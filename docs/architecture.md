@@ -57,7 +57,7 @@ Each module keeps a small interface over the work it hides.
 
 | Module | Interface | Hides |
 |---|---|---|
-| Feed (`src/feed/`) | `runFeed(payload)`: runs until stopped, writes a Cotización whenever an Instrumento's last trade changes, keeps `feed-status` current | reMarkets login and the daily token renewal; the daily Instrumento refresh (agro segment `DDA`, filtered to Rosario USD futures, with daily price limits); the one-request-per-second rotation over Instrumentos with an active Precio gatillo; retries. All A3 URLs and JSON stay in one thin client. |
+| Feed (`src/feed/`) | `runFeed(payload)`: runs until stopped, writes a Cotización whenever an Instrumento's last trade changes, keeps `feed-status` current. `simulateQuotes(payload)`: one step of the demo market over the watched Instrumentos | reMarkets login and the daily token renewal; the daily Instrumento refresh (agro segment `DDA`, filtered to Rosario USD futures, with daily price limits); the one-request-per-second rotation over Instrumentos with an active Precio gatillo; retries. All A3 URLs and JSON stay in one thin client. The demo price walk. |
 | Trigger rules (`src/alerts/evaluate.ts`) | `evaluate(trigger, quote, now)` returns none, cerca or alcanzado | The rules below, as a pure function. |
 | Alerting (`afterChange` hook on `quotes`) | Runs for every new Cotización, in whichever process wrote it | Finds the active Precios gatillo on that Instrumento across Empresas, evaluates each, saves the Alerta in the trigger's Empresa, updates the trigger's status, emails its Responsable. |
 | Resolución (hook on `alerts`) | Setting the Resolución on an Alerta alcanzado | confirmar: closes the trigger and opens an Operación in Etapa Concertada, prefilled from it; actualizar: a new Precio objetivo, watched from now; cancelar. Records who and when. |
@@ -116,6 +116,8 @@ Payload's nodemailer adapter, using SMTP settings from the environment when they
 
 ## Feed
 
+- **The demo never reads an external endpoint.** The dashboard's **Simular cotizaciones** button calls `POST /api/feed/tick`, which runs `simulateQuotes`: for every Instrumento with an active Precio gatillo it writes a Cotización one step toward the tightest Precio objetivo — first the *cerca* price (99% for a venta, 101% for a compra), then the target. Two clicks therefore raise an Alerta cerca and then an Alerta alcanzado. Any Usuario can press it, so one login demos the whole flow.
+- The long-lived poller below is the opt-in A3 adapter (`pnpm feed`, or `A3_MODE=live`). It is not needed for the demo, and serverless hosts have nowhere to run it.
 - It polls REST snapshots (`/rest/marketdata/get` with entries `LA,BI,OF`) at most once per second, rotating over watched Instrumentos. With 4 Instrumentos, each refreshes every 4 s. Past about 10, switch to the WebSocket.
 - reMarkets base URL: `https://api.remarkets.primary.com.ar`. The token comes from `POST /auth/getToken` and lasts 24 h.
 - The dashboard shows "mercado cerrado" outside 10:30–17:00 on weekdays, Argentina time (11:00–17:00 from November to March). Holidays aren't handled.
