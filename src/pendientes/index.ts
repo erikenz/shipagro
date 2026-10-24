@@ -1,4 +1,4 @@
-import type { Payload, TypedUser } from 'payload'
+import type { Payload, TypedUser, Where } from 'payload'
 
 import { STAGES } from '@/domain'
 import type { Contact, Instrument, PriceTrigger } from '@/payload-types'
@@ -18,12 +18,14 @@ export const listPendientes = async (
   payload: Payload,
   user: TypedUser,
   now: Date = new Date(),
+  scope: Where = {},
 ): Promise<Pendiente[]> => {
   const [alerts, operations] = await Promise.all([
     payload.find({
       collection: 'alerts',
       where: {
         and: [
+          scope,
           { 'priceTrigger.responsable': { equals: user.id } },
           {
             or: [
@@ -46,7 +48,7 @@ export const listPendientes = async (
     payload.find({
       collection: 'operations',
       where: {
-        and: [{ responsable: { equals: user.id } }, { stage: { not_equals: 'cobrada' } }],
+        and: [scope, { responsable: { equals: user.id } }, { stage: { not_equals: 'cobrada' } }],
       },
       depth: 1,
       pagination: false,

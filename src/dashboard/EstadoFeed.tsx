@@ -3,38 +3,26 @@ import type { ServerProps } from 'payload'
 import { formatDay, formatTime } from '@/pendientes/time'
 
 import { feedState } from './market'
-import { cardStyle, mutedStyle, tagStyle } from './styles'
 
 const lastUpdate = (lastSuccessAt?: string | null) =>
   lastSuccessAt
     ? `Última actualización: ${formatDay(lastSuccessAt)} ${formatTime(lastSuccessAt)}`
     : 'Todavía no hubo actualizaciones.'
 
-export default async function EstadoFeed({ payload, user }: ServerProps) {
+export default async function EstadoFeed({ payload, user }: Pick<ServerProps, 'payload' | 'user'>) {
   if (!user) return null
   const status = await payload.findGlobal({ slug: 'feed-status', overrideAccess: false, user })
   const state = feedState(status.lastSuccessAt, new Date())
 
   return (
-    <section className="card" style={cardStyle} aria-labelledby="estado-feed-title">
-      <h3 id="estado-feed-title">Precios</h3>
-      {state.kind === 'cerrado' ? (
-        <p>
-          <span style={tagStyle(false)}>Mercado cerrado</span>
-        </p>
-      ) : state.kind === 'sin-actualizar' ? (
-        <p role="status">
-          <span style={tagStyle(true)}>
-            {state.lastSuccessAt
-              ? `Precios sin actualizar desde ${formatTime(state.lastSuccessAt)}`
-              : 'Precios sin actualizar'}
-          </span>
-        </p>
-      ) : (
-        <p>Precios al día ({formatTime(state.lastSuccessAt)}).</p>
-      )}
-      <p style={mutedStyle}>{lastUpdate(status.lastSuccessAt)}</p>
-      {status.lastError ? <p style={mutedStyle}>Último error del feed: {status.lastError}</p> : null}
-    </section>
+    <div className="desk-status" role="status">
+      <span className={`desk-live desk-live-${state.kind}`}>
+        <i aria-hidden="true" />
+        {state.kind === 'cerrado' ? 'Mercado cerrado' : state.kind === 'sin-actualizar' ? 'Precios sin actualizar' : 'Rueda abierta · Precios al día'}
+      </span>
+      <span>A3 Mercados · reMarkets (prueba)</span>
+      <span className="desk-status-detail">{lastUpdate(status.lastSuccessAt)}</span>
+      {status.lastError && <span className="desk-status-detail">Último error del feed: {status.lastError}</span>}
+    </div>
   )
 }
