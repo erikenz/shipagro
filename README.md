@@ -6,7 +6,7 @@ ShipAgro helps corredoras, acopios and cooperativas answer two questions: **what
 
 **[Open the hackathon demo →](https://shipagro.vercel.app/admin)**
 
-Reviewers can test the app entirely in a browser. No installation, A3 account or local database is needed. Start with the [guided walkthrough](#guided-walkthrough-10–15-minutes).
+Reviewers can test the app entirely in a browser. No installation, A3 account or local database is needed. Start with the [guided walkthrough](#guided-walkthrough-10-15-minutes).
 
 ShipAgro **does not place orders, negotiate or execute trades**. An Alerta prompts a person to contact someone and record a decision. Confirming it creates an internal Operación to follow up, not an order on an exchange.
 
@@ -57,7 +57,7 @@ Use a normal browser window for Bruno and a private/incognito window for the sup
 
 The seed dataset contains two Empresas, 15 Contactos, nine Operaciones across the Etapas and four Precios gatillo. Previous reviewers may have changed them, so the walkthrough creates a new Contacto and Precio gatillo instead of relying on an untouched seed.
 
-## Guided walkthrough (10–15 minutes)
+## Guided walkthrough (10-15 minutes)
 
 ### 1. See what needs attention
 
