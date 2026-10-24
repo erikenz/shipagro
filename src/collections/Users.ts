@@ -1,15 +1,21 @@
-import type { Access, CollectionConfig, Where } from 'payload'
+import type { CollectionConfig } from 'payload'
 
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields'
 
-import { getUserTenantIDs, isSuperAdmin } from '@/access'
+import { isSuperAdmin } from '@/access'
+import {
+  canCreateUser,
+  canDeleteUser,
+  canReadUser,
+  canUpdateUser,
+  guardUserChange,
+  guardUserDelete,
+  isAdministrador,
+} from '@/access/users'
 import { TENANT_ROLES } from '@/domain'
-import type { User } from '@/payload-types'
 
-const isAdministrador = (user: User | null | undefined) =>
-  getUserTenantIDs(user, 'administrador').length > 0
-
-// Each row links the Usuario to one Empresa with a role there.
+// Each row links the Usuario to one Empresa with a role there. Which rows an
+// Administrador may touch is checked by `guardUserChange`.
 const tenants = tenantsArrayField({
   tenantsArrayFieldName: 'tenants',
   tenantsArrayTenantFieldName: 'tenant',
@@ -31,38 +37,13 @@ const tenants = tenantsArrayField({
   ],
 })
 
-// Administradores may create Usuarios only inside the Empresas they administer.
-const create: Access = ({ req, data }) => {
-  if (isSuperAdmin(req.user)) return true
-  const allowed = getUserTenantIDs(req.user, 'administrador')
-  const requested: unknown[] = (data?.tenants ?? []).map((row: { tenant: unknown }) => row.tenant)
-  return allowed.length > 0 && requested.every((id) => allowed.includes(id as number))
-}
-
-// Everyone sees the Usuarios of their own Empresas (to pick a Responsable).
-const read: Access = ({ req }) => {
-  if (!req.user) return false
-  if (isSuperAdmin(req.user)) return true
-  return {
-    or: [
-      { id: { equals: req.user.id } },
-      { 'tenants.tenant': { in: getUserTenantIDs(req.user) } },
-    ],
-  } as Where
-}
-
-const updateOrDelete: Access = ({ req, id }) => {
-  if (!req.user) return false
-  if (isSuperAdmin(req.user) || req.user.id === id) return true
-  return { 'tenants.tenant': { in: getUserTenantIDs(req.user, 'administrador') } }
-}
-
 export const Users: CollectionConfig = {
   slug: 'users',
   labels: { singular: 'Usuario', plural: 'Usuarios' },
   admin: { useAsTitle: 'name', defaultColumns: ['name', 'email'] },
   auth: true,
-  access: { create, read, update: updateOrDelete, delete: updateOrDelete },
+  access: { create: canCreateUser, read: canReadUser, update: canUpdateUser, delete: canDeleteUser },
+  hooks: { beforeChange: [guardUserChange], beforeDelete: [guardUserDelete] },
   fields: [
     { name: 'name', type: 'text', label: 'Nombre', required: true },
     {
@@ -76,6 +57,11 @@ export const Users: CollectionConfig = {
       },
       admin: { position: 'sidebar' },
     },
-    { ...tenants, label: 'Empresas', admin: { ...tenants.admin, position: 'sidebar' } },
+    {
+      ...tenants,
+      label: 'Empresas',
+      labels: { singular: 'Empresa', plural: 'Empresas' },
+      admin: { ...tenants.admin, position: 'sidebar' },
+    },
   ],
 }
