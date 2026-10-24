@@ -1,0 +1,28 @@
+// ShipAgro accent: a field green, applied through Payload's theme variables.
+:root {
+  --shipagro-accent: rgb(47, 107, 58);
+  --shipagro-accent-hover: rgb(36, 84, 45);
+  --shipagro-accent-contrast: rgb(255, 255, 255);
+
+  // Focus rings, success toasts and links use the success scale.
+  --theme-success-500: var(--shipagro-accent);
+  --theme-success-750: var(--shipagro-accent-hover);
+}
+
+html[data-theme='dark'] {
+  --shipagro-accent: rgb(110, 180, 110);
+  --shipagro-accent-hover: rgb(140, 200, 135);
+  --shipagro-accent-contrast: rgb(16, 28, 18);
+}
+
+.btn--style-primary {
+  --bg-color: var(--shipagro-accent);
+  --hover-bg: var(--shipagro-accent-hover);
+  --color: var(--shipagro-accent-contrast);
+  --hover-color: var(--shipagro-accent-contrast);
+}
+
+.graphic-logo svg,
+.graphic-icon svg {
+  display: block;
+}

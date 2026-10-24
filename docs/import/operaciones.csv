@@ -1,0 +1,3 @@
+seller,buyer,grain,tons,price,currency,aFijar,stage,responsable,dueDate,deliveryConditions
+12,15,soja,500,318,USD,false,confirmada,3,2026-11-05,Entrega en Rosario
+14,15,maiz,1000,,USD,true,concertada,3,2026-11-20,A fijar antes del 15/12
