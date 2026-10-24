@@ -1,6 +1,8 @@
 // Thin client for A3's Trading API (reMarkets in the demo). The only code that knows
 // A3 URLs and JSON; see docs/research/a3-mercados-apis.md §1a and §3.4.
 
+import { createMockA3Client } from './mockA3Client'
+
 export const DEFAULT_A3_BASE_URL = 'https://api.remarkets.primary.com.ar'
 const MARKET_ID = 'ROFX'
 // The token lasts 24 h; renew it a bit earlier so a request never races its expiry.
@@ -43,7 +45,11 @@ export type A3Client = {
 
 type A3ClientOptions = { baseUrl: string; username: string; password: string }
 
+/** `A3_MODE=live` reads reMarkets; anything else uses the mock, which needs no credentials. */
+export const isLiveFeed = (env: NodeJS.ProcessEnv = process.env) => env.A3_MODE === 'live'
+
 export function a3ClientFromEnv(env: NodeJS.ProcessEnv = process.env): A3Client {
+  if (!isLiveFeed(env)) return createMockA3Client()
   const username = env.A3_USERNAME
   const password = env.A3_PASSWORD
   if (!username || !password) {

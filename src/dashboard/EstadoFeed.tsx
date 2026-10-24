@@ -1,8 +1,11 @@
 import type { ServerProps } from 'payload'
 
+import { isSuperAdmin } from '@/access'
+import { isLiveFeed } from '@/feed/a3Client'
 import { formatDay, formatTime } from '@/pendientes/time'
 
 import { feedState } from './market'
+import { SimularCotizaciones } from './SimularCotizaciones'
 import { cardStyle, mutedStyle, tagStyle } from './styles'
 
 const lastUpdate = (lastSuccessAt?: string | null) =>
@@ -13,7 +16,9 @@ const lastUpdate = (lastSuccessAt?: string | null) =>
 export default async function EstadoFeed({ payload, user }: ServerProps) {
   if (!user) return null
   const status = await payload.findGlobal({ slug: 'feed-status', overrideAccess: false, user })
-  const state = feedState(status.lastSuccessAt, new Date())
+  const live = isLiveFeed()
+  // The mock trades around the clock, so market hours only apply to the live feed.
+  const state = feedState(status.lastSuccessAt, new Date(), { ignoreMarketHours: !live })
 
   return (
     <section className="card" style={cardStyle} aria-labelledby="estado-feed-title">
@@ -35,6 +40,10 @@ export default async function EstadoFeed({ payload, user }: ServerProps) {
       )}
       <p style={mutedStyle}>{lastUpdate(status.lastSuccessAt)}</p>
       {status.lastError ? <p style={mutedStyle}>Último error del feed: {status.lastError}</p> : null}
+      {live ? null : (
+        <p style={mutedStyle}>Precios simulados (sin conexión a A3). No son datos de mercado reales.</p>
+      )}
+      {isSuperAdmin(user) ? <SimularCotizaciones /> : null}
     </section>
   )
 }
