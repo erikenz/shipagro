@@ -10,7 +10,7 @@ Agreed in the design session of 2026-10-24 for a hackathon MVP. Terms follow [GL
 - RF01 as a one-time CSV import, using Payload's import-export plugin run synchronously.
 - RNF01/RNF02 through Empresas and roles, RNF03 through the trigger rules below, RNF04 through version history.
 
-**Out:** RF03 (reading emails), RF08 (message drafts; no AI for now), WhatsApp, billing and seat limits, Excel/Sheets sync and XLSX, recovering triggers crossed during a feed outage, daily digest, price charts, mobile app, deployment, and production A3 access and data licensing.
+**Out:** RF03 (reading emails), RF08 (message drafts; no AI for now), WhatsApp, billing and seat limits, Excel/Sheets sync and XLSX, recovering triggers crossed during a feed outage, daily digest, mobile app, deployment, and production A3 access and data licensing.
 
 ## Shape
 
@@ -62,9 +62,11 @@ Each module keeps a small interface over the work it hides.
 | Alerting (`afterChange` hook on `quotes`) | Runs for every new Cotización, in whichever process wrote it | Finds the active Precios gatillo on that Instrumento across Empresas, evaluates each, saves the Alerta in the trigger's Empresa, updates the trigger's status, emails its Responsable. |
 | Resolución (hook on `alerts`) | Setting the Resolución on an Alerta alcanzado | confirmar: closes the trigger and opens an Operación in Etapa Concertada, prefilled from it; actualizar: a new Precio objetivo, watched from now; cancelar. Records who and when. |
 | Pendientes (`src/pendientes.ts`) | `listPendientes(payload, user)` returns a ranked list | The ranking below. |
-| Dashboard (admin `beforeDashboard` components) | The admin home page | Mis pendientes, open Alertas, feed status and "mercado cerrado". |
+| Dashboard (custom admin dashboard view) | The admin home page, keeping Payload navigation and the Empresa selector | Upcoming Plazos, creation link for a Precio gatillo, the latest stored Cotización and its recent history, open Alertas, a Contacto preview, Mis pendientes and feed status. Reads enforce access and the selected Empresa; market data is shared. |
 
 The seam that matters is writing a Cotización. It has two adapters, the feed and the super-admin's manual entry, and everything after it is shared. That is why the demo works with the market closed.
+
+The dashboard's trading-desk layout follows the Gatillo HTML reference, but uses stored data rather than its scripted demo. Its chart shows up to 60 Cotizaciones for the latest Instrumento and source, using the last traded price. “Actualizar mesa” refreshes the view; the super-admin's existing feed control generates or fetches new Cotizaciones. There is no dictation, AI extraction or order execution.
 
 ## Trigger rules
 

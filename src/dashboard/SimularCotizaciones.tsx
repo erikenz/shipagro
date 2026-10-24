@@ -3,8 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
-import { mutedStyle } from './styles'
-
 type TickResult = { polled?: number; error?: string }
 
 /** Super-admin only: runs one pass of the (mock) feed so new Cotizaciones and Alertas appear. */
@@ -31,19 +29,13 @@ export function SimularCotizaciones() {
     })
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'calc(var(--base) / 2)' }}>
-      <button
-        type="button"
-        className="btn btn--style-secondary btn--size-small"
-        style={{ margin: 0 }}
-        onClick={run}
-        disabled={pending}
-      >
+    <>
+      <button type="button" className="desk-text-link" onClick={run} disabled={pending}>
         {pending ? 'Consultando…' : 'Actualizar precios ahora'}
       </button>
-      <span style={mutedStyle} role="status" aria-live="polite">
+      <span className="desk-muted" role="status" aria-live="polite">
         {message}
       </span>
-    </div>
+    </>
   )
 }

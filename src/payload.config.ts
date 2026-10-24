@@ -46,7 +46,7 @@ export default buildConfig({
     meta: { titleSuffix: ' · ShipAgro' },
     components: {
       graphics: { Icon: '/graphics/Icon', Logo: '/graphics/Logo' },
-      beforeDashboard: ['/dashboard/Pendientes', '/dashboard/AlertasAbiertas', '/dashboard/EstadoFeed'],
+      views: { dashboard: { Component: '/dashboard/Dashboard' } },
     },
   },
   collections: [Tenants, Users, Contacts, Operations, PriceTriggers, Alerts, Instruments, Quotes],
