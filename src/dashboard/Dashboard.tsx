@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import type { AdminViewServerProps, Where } from 'payload'
 
-import { isSuperAdmin } from '@/access'
 import { GRAINS, STAGES } from '@/domain'
 import { isLiveFeed } from '@/feed/a3Client'
 import { argentinaDay, argentinaDayPlus, formatDay } from '@/pendientes/time'
@@ -155,7 +154,7 @@ export default async function Dashboard({ initPageResult }: AdminViewServerProps
           No se ejecutan órdenes.
         </span>
         <span className="desk-footer-actions">
-          {isSuperAdmin(user) ? <SimularCotizaciones /> : null}
+          <SimularCotizaciones />
           <Refresh />
         </span>
       </footer>

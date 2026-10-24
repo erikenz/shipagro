@@ -49,7 +49,7 @@ Open **https://shipagro.vercel.app/admin**. The demo accounts below all use pass
 | `ana@pampa.test` | Ana Ferreyra | Corredora Pampa SA | Administrador |
 | `diego@norte.test` | Diego Paz | Acopio del Norte SRL | Comercial |
 | `carla@norte.test` | Carla Ruiz | Acopio del Norte SRL | Administrador |
-| `admin@shipagro.test` | Admin ShipAgro | All Empresas | Super-admin — manual price entry and feed controls |
+| `admin@shipagro.test` | Admin ShipAgro | All Empresas | Super-admin — manual price entry and every Empresa |
 
 Use a normal browser window for Bruno and a private/incognito window for the super-admin. Two tabs in the same browser session share a login.
 
@@ -62,7 +62,7 @@ The seed dataset contains two Empresas, 15 Contactos, nine Operaciones across th
 ### 1. See what needs attention
 
 1. Log in as **`bruno@pampa.test`**.
-2. On the home dashboard, inspect **Mis pendientes**, **Alertas abiertas** and **Precios**.
+2. On the home dashboard, inspect the market card, **Cartera de Contactos**, **Alertas abiertas** and **Mis pendientes**.
 3. Open **Operaciones** and **Contactos** from the navigation.
 
 **Expected:** Bruno sees business records for Corredora Pampa SA, not Acopio del Norte SRL. Mis pendientes is personal to Bruno; the collection lists show the Empresa's records, including work assigned to other Usuarios. In an untouched seed, Sofía Bianchi and Juan Pérez have overdue Operaciones assigned to Bruno.
@@ -103,7 +103,7 @@ In the private window, log in as **`admin@shipagro.test`**:
 
 Create a second new Cotización at `322` with a fresh time if you want to check deduplication: your Precio gatillo should not receive another Cerca Alerta during the same activation.
 
-**Keep this test predictable:** do not click **Actualizar precios ahora** during steps 2–5. Manual Cotizaciones are shared market data and can also trigger other reviewers' active Precios gatillo on the same Instrumento. Follow the Alerta linked to your own Contacto; another reviewer or a running feed can also advance your trigger.
+**Keep this test predictable:** do not press **Simular cotizaciones** during steps 2–5. Its simulated Cotizaciones are shared market data and can also trigger other reviewers' active Precios gatillo on the same Instrumento. Follow the Alerta linked to your own Contacto; another reviewer or a running feed can also advance your trigger.
 
 ### 4. Reach the target
 
@@ -166,15 +166,13 @@ Create a **new Precio gatillo for each test**; a resolved Alerta cannot be resol
 | Compra | Create a trigger for your Contacto on `TRI.ROS/DIC26`, **Compra**, target `206`, Responsable Bruno. Enter manual Cotizaciones at `208`, then `206`, each with a fresh time. | Cerca, then Alcanzado: Compra watches for a falling price. Confirming creates an Operación with the Contacto as Comprador rather than Vendedor. |
 | Reject stale prices | Create a fresh Venta trigger at `325`. Enter a manual Cotización at `325` with a trade time ten minutes in the past. | That Cotización creates no Alerta for the new trigger. A new one with the current time can reach it. |
 
-### Simulated feed
+### Simulated prices
 
-After the manual walkthrough, open the super-admin dashboard and click **Actualizar precios ahora** in **Precios**.
+After the manual walkthrough, press **Simular cotizaciones** in the dashboard footer, then refresh. Any Usuario can press it; it needs no A3 credentials and contacts no market-data endpoint.
 
-**Expected:** the app reports how many Instrumentos it consulted and updates the feed status. It polls Instrumentos with active Precios gatillo, so a count of zero can be valid. Refresh a Comercial's dashboard to see any resulting Alertas.
+**Expected:** each Instrumento with an active Precio gatillo gets one new Cotización, one step toward its Precio objetivo: first the *cerca* price (99% of the target for a Venta, 101% for a Compra), then the target itself. The button reports how many Cotizaciones it wrote and how many Alertas you can see. Two presses therefore produce a Cerca Alerta and then an Alcanzado one for the same trigger.
 
-The default feed is simulated and needs no A3 credentials. Its prices change by the minute, so repeated clicks within one minute need not create new Cotizaciones or Alertas. A trigger created in the current minute may need a price from the next minute before it can fire.
-
-**These are not production market prices.** The dashboard identifies simulated mode as **“Precios simulados (sin conexión a A3)”**. Currently, feed-generated Cotizaciones use the **reMarkets (prueba)** source label even in simulated mode; that label alone does not prove an A3 connection. Manual entries are labeled **Manual**.
+**These are not production market prices.** The dashboard shows simulated mode as **“Precios simulados · Sin conexión a A3”**. Simulated Cotizaciones use the **reMarkets (prueba)** source label, so that label alone does not prove an A3 connection. Manual entries are labeled **Manual**.
 
 ### CSV import/export
 
@@ -196,11 +194,11 @@ Operaciones, Precios gatillo and Alertas have version history. Inspect it after 
 | Symptom | What to check |
 |---|---|
 | Cannot sign in with a demo account | Recheck the address and password above. If they still fail, ask the project team to restore demo access; do not create or reset shared accounts. |
-| Cannot create a Cotización or see the feed button | Use the super-admin account in a separate browser session. Those controls are not available to Comerciales. |
+| Cannot create a Cotización | Use the super-admin account in a separate browser session. **Nuevo precio gatillo** and **Simular cotizaciones** are available to every Usuario; entering a Cotización by hand is not. |
 | No Alerta after entering a price | Confirm the Instrumento matches, the trigger is Activo, and the trade time is after activation and no more than five minutes old. Check that Vigencia has not passed and the price is within the Instrumento's daily limits, when present. |
 | The trigger is already Alcanzado, Confirmado or Cancelado | Another test may have advanced it. Create a fresh trigger for your own Contacto rather than reusing a resolved one. |
 | Dashboard appears unchanged | Refresh the page; the other browser window does not update automatically. Use the Alertas list to find your own Contacto if the dashboard is busy. |
-| Precios sin actualizar or Mercado cerrado | These describe feed freshness or trading hours, not a failed manual-price test. Use a fresh manual Cotización for the walkthrough. |
+| Precios sin actualizar | The last simulated or polled price is over two minutes old. Press **Simular cotizaciones**, or use a fresh manual Cotización. **Mercado cerrado** only appears in the opt-in live feed mode. |
 | Login page or app returns an error | Record the page URL, time and visible error and share them with the project team. Reviewers should not need database access to recover the hosted demo. |
 
 ## How it works
@@ -210,7 +208,7 @@ The app uses **Next.js 16, React 19, Payload CMS 3.92 and PostgreSQL**. Payload'
 ```mermaid
 flowchart TD
   manual["Super-admin enters a manual Cotización"] --> quote["New Cotización"]
-  simulated["Simulated feed"] --> quote
+  simulated["Simular cotizaciones button"] --> quote
   a3["Optional reMarkets test feed"] --> quote
   quote --> rules["Deterministic price and freshness rules"]
   rules --> alert["Alerta and email to Responsable"]
@@ -224,11 +222,11 @@ flowchart TD
 - **Explainable rules, not AI:** Venta reaches its target at or above it; Compra at or below it. Cerca is within 1% on the approaching side, once per activation. Reached triggers pause until a human records a Resolución.
 - **Freshness checks:** trades must be after activation, no more than five minutes old, positive and within daily price limits when available. Expired or inactive triggers do not fire.
 - **Empresa isolation:** business records carry an Empresa, with access enforced in Payload through the multi-tenant plugin and role rules. Instrumentos and Cotizaciones are shared market data.
-- **Two feed entry points:** a one-pass endpoint backs the hosted dashboard button; `pnpm feed` runs a continuous polling process for local development. Both write Cotizaciones through the same alerting hooks.
+- **Three price entry points:** the **Simular cotizaciones** button writes a simulated Cotización locally; the super-admin can enter one by hand; `pnpm feed` polls the optional reMarkets test feed. All three write Cotizaciones through the same alerting hooks.
 
 ### MVP boundaries
 
-This is a hackathon MVP, not a production trading system. It does not include automated trading, AI-generated decisions, email ingestion, WhatsApp, spreadsheet synchronization, billing, price charts or a mobile app. CSV import is a one-time import, not a live connection to a spreadsheet.
+This is a hackathon MVP, not a production trading system. It does not include automated trading, AI-generated decisions, email ingestion, WhatsApp, spreadsheet synchronization, billing or a mobile app. CSV import is a one-time import, not a live connection to a spreadsheet.
 
 The optional A3 integration connects to **reMarkets, a test environment**, not production market data. Production access and redistribution licensing remain future work. The feed does not recover price crossings missed during an outage, and its market-hours indicator does not account for holidays.
 
@@ -257,7 +255,7 @@ pnpm seed
 pnpm dev
 ```
 
-Open http://localhost:3000/admin and use the same demo accounts above. To run the simulated feed continuously, run `pnpm feed` in a second terminal.
+Open http://localhost:3000/admin and use the same demo accounts above. The demo needs no feed process: **Simular cotizaciones** writes prices on demand. `pnpm feed` instead runs the continuous poller (the mock A3 client unless `A3_MODE=live`).
 
 For the optional reMarkets connection, add `A3_MODE=live` to your local `.env` and fill `A3_USERNAME` and `A3_PASSWORD` using credentials from [reMarkets](https://remarkets.primary.ventures/) under **Mi Cuenta → Datos Usuario**. Restart the web and feed processes after changing the environment. Despite the mode name, this still uses the reMarkets **test** endpoint by default.
 

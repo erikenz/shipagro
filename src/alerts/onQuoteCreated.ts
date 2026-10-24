@@ -68,7 +68,13 @@ export const alertOnQuote: CollectionAfterChangeHook<Quote> = async ({ doc, oper
     const responsable = await populated<User>(trigger.responsable, (id) =>
       payload.findByID({ collection: 'users', id, depth: 0, req }),
     )
-    await sendAlertEmail(req, { alert, trigger, quote: doc, instrument, contact, responsable })
+    // Detached on purpose: an SMTP round trip must not hold the Cotización's response. The demo
+    // simulation writes several Cotizaciones in one request, so awaiting every email made the
+    // dashboard button take ~19 s, past a serverless function's timeout. Failures are logged.
+    void sendAlertEmail(req, { alert, trigger, quote: doc, instrument, contact, responsable }).catch(
+      (err) =>
+        req.payload.logger.error({ err, alert: alert.id }, 'No se pudo enviar el email de la Alerta'),
+    )
   }
 
   return doc

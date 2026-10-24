@@ -67,35 +67,6 @@ export async function runFeed(payload: Payload, { signal, client = a3ClientFromE
   payload.logger.info('feed: stopped')
 }
 
-export type FeedTickResult = { instruments: number; polled: number; error?: string }
-
-/**
- * One pass of the feed, for serverless hosts with no long-lived process: refreshes Instrumentos,
- * polls every watched one once and records the outcome in `feed-status`.
- */
-export async function runFeedOnce(
-  payload: Payload,
-  { client = a3ClientFromEnv(), signal }: { client?: A3Client; signal?: AbortSignal } = {},
-): Promise<FeedTickResult> {
-  const status = createFeedStatusReporter(payload)
-  let rotation: WatchedInstrument[] = []
-  try {
-    await refreshInstruments(payload, client, signal)
-    rotation = await loadRotation(payload)
-    const abort = signal ?? new AbortController().signal
-    for (const instrument of rotation) await pollInstrument(payload, client, instrument, abort)
-    status.success()
-    return { instruments: rotation.length, polled: rotation.length }
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err)
-    payload.logger.error(`feed: ${message}`)
-    status.failure(message)
-    return { instruments: rotation.length, polled: 0, error: message }
-  } finally {
-    await status.flush(true)
-  }
-}
-
 function backoff(consecutiveErrors: number): number {
   if (consecutiveErrors === 0) return TICK_MS
   return Math.min(MAX_BACKOFF_MS, TICK_MS * 2 ** (consecutiveErrors - 1))

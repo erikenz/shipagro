@@ -2,7 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 import { authenticated, superAdminOnly } from '@/access'
 
-// Kept current by `pnpm feed`; the dashboard reads it to show when prices last updated.
+// Kept current by the demo simulation and by `pnpm feed`; the dashboard reads it to show when prices last updated.
 export const FeedStatus: GlobalConfig = {
   slug: 'feed-status',
   label: 'Estado del feed',
