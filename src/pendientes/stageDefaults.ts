@@ -32,7 +32,7 @@ export const applyStageDefaults: CollectionBeforeChangeHook<Operation> = ({
       collection: 'operations',
       errors: [{ path: 'stage', message: 'La Etapa "Precio fijado" solo corresponde a Operaciones a fijar.' }],
       req,
-    })
+    }, req.t)
   }
 
   if (operation !== 'update' || !originalDoc || !data.stage || data.stage === originalDoc.stage) return data
