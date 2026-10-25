@@ -67,6 +67,43 @@ export async function runFeed(payload: Payload, { signal, client = a3ClientFromE
   payload.logger.info('feed: stopped')
 }
 
+export type PollOnceResult = { polled: number; error?: string }
+
+/**
+ * One pass over the watched Instrumentos, for a scheduler on a serverless host (no long-lived
+ * process). Keeps A3's one-request-per-second pace between snapshots.
+ */
+export async function pollOnce(
+  payload: Payload,
+  { client = a3ClientFromEnv(), signal }: { client?: A3Client; signal?: AbortSignal } = {},
+): Promise<PollOnceResult> {
+  const status = createFeedStatusReporter(payload)
+  const abort = signal ?? new AbortController().signal
+  let polled = 0
+  try {
+    const rotation = await loadRotation(payload)
+    for (const [index, instrument] of rotation.entries()) {
+      if (index > 0) await sleep(TICK_MS, abort)
+      await pollInstrument(payload, client, instrument, abort)
+      polled++
+    }
+    status.success()
+    return { polled }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    payload.logger.error(`feed: ${message}`)
+    status.failure(message)
+    return { polled, error: message }
+  } finally {
+    await status.flush(true)
+  }
+}
+
+/** The daily Instrumento refresh on its own, for a once-a-day scheduler. */
+export async function refreshInstrumentsOnce(payload: Payload, client: A3Client = a3ClientFromEnv()) {
+  await refreshInstruments(payload, client)
+}
+
 function backoff(consecutiveErrors: number): number {
   if (consecutiveErrors === 0) return TICK_MS
   return Math.min(MAX_BACKOFF_MS, TICK_MS * 2 ** (consecutiveErrors - 1))
